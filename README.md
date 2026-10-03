@@ -28,7 +28,17 @@ Browser ──► Vercel relay (app.py) ──► Omnigent server (Modal) ──
 | `scripts/make_secrets.py` | Generates secrets locally and pushes them to Modal |
 | `scripts/smoke_test.py` | Checks every hop and saves a timestamped record in `runs/` |
 
-## Run Phase 1
+## Run Phase 1 (one command)
+
+```bash
+python scripts/run_phase1.py
+```
+
+It checks your settings, saves them to Modal, deploys the Omnigent server,
+waits for it to start, runs the end-to-end test, and prints the four values
+to add to Vercel. The individual commands below do the same steps one by one.
+
+## Run Phase 1 step by step
 
 From the repository root on your own computer:
 
