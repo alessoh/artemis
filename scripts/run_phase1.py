@@ -15,6 +15,8 @@ It does, in order, explaining each step as it goes:
 5. Test         runs the end-to-end smoke test and prints the result
 6. Vercel       shows the four values to add to your Vercel project
 
+If the server is already running, steps 2 to 4 are skipped so a running
+lab is never restarted mid-test. Add --redeploy to push new settings or code.
 Safe to run again at any time.
 """
 
@@ -36,6 +38,8 @@ import make_secrets as ms  # noqa: E402
 REPO_ROOT = Path(__file__).resolve().parent.parent
 URL_RE = re.compile(r"https://[a-z0-9-]+\.modal\.run")
 HEALTH_WAIT_SECONDS = 360
+# Pause after a deploy so Modal retires the previous container first.
+SWITCHOVER_SECONDS = 120
 
 
 def say(step: str, text: str) -> None:
@@ -87,6 +91,14 @@ def deploy() -> str | None:
     return url
 
 
+def server_is_up(url: str) -> bool:
+    """Return True when the Omnigent server already answers /health."""
+    try:
+        return httpx.get(f"{url}/health", timeout=15).status_code == 200
+    except httpx.HTTPError:
+        return False
+
+
 def wait_for_health(url: str) -> bool:
     """Poll the server's /health endpoint until it answers or time runs out."""
     deadline = time.monotonic() + HEALTH_WAIT_SECONDS
@@ -127,33 +139,47 @@ def main() -> int:
     print(f"   Modal token:   {ms.mask('MODAL_TOKEN_ID', values['MODAL_TOKEN_ID'])}")
     print(f"   Anthropic key: {ms.describe_key(values['OMNIGENT_ANTHROPIC_API_KEY'])}")
 
-    say("Step 2 of 6", "saving the settings into your Modal account")
-    push_settings(values)
+    url = values["OMNIGENT_ACCOUNTS_BASE_URL"].rstrip("/")
+    redeploy = "--redeploy" in sys.argv[1:]
+    already_running = not redeploy and server_is_up(url)
 
-    say("Step 3 of 6", "starting the Omnigent server on Modal (a minute or two)")
-    url = deploy()
-    if not url:
-        return stop("the Modal deploy did not finish. The lines above say why.")
-    expected = values["OMNIGENT_ACCOUNTS_BASE_URL"].rstrip("/")
-    if url != expected:
-        print(f"   Modal chose the address {url}; updating settings and deploying again.")
-        values["OMNIGENT_ACCOUNTS_BASE_URL"] = url
-        values["OMNIGENT_URL"] = url
-        ms.save_env(values)
+    if already_running:
+        say("Steps 2 to 4", f"the server is already running at {url}; leaving it as it is")
+        print("   (To push new settings or code, run:  python scripts/run_phase1.py --redeploy)")
+    else:
+        say("Step 2 of 6", "saving the settings into your Modal account")
         push_settings(values)
-        if not deploy():
-            return stop("the second Modal deploy did not finish. The lines above say why.")
-    print(f"   Server address: {url}")
 
-    say("Step 4 of 6", "waiting for the server to wake up (first start sets up the database)")
-    if not wait_for_health(url):
-        return stop(f"the server did not answer within {HEALTH_WAIT_SECONDS // 60} minutes. "
-                    "Run  modal app logs artemis-omnigent  to see why.")
+        say("Step 3 of 6", "starting the Omnigent server on Modal (a minute or two)")
+        new_url = deploy()
+        if not new_url:
+            return stop("the Modal deploy did not finish. The lines above say why.")
+        if new_url != url:
+            print(f"   Modal chose the address {new_url}; updating settings and deploying again.")
+            url = new_url
+            values["OMNIGENT_ACCOUNTS_BASE_URL"] = url
+            values["OMNIGENT_URL"] = url
+            ms.save_env(values)
+            push_settings(values)
+            if not deploy():
+                return stop("the second Modal deploy did not finish. The lines above say why.")
+        print(f"   Server address: {url}")
+
+        say("Step 4 of 6", "waiting for the server to wake up (first start sets up the database)")
+        if not wait_for_health(url):
+            return stop(f"the server did not answer within {HEALTH_WAIT_SECONDS // 60} minutes. "
+                        "Run  python scripts/diagnose_phase1.py  and attach its report.")
+        # Omnigent keeps live sandbox launches in the server's memory. Right
+        # after a deploy, Modal may still route a request to the outgoing
+        # container, and a launch started there is lost when it stops.
+        print(f"   Letting Modal finish switching to the new server ({SWITCHOVER_SECONDS} seconds).")
+        time.sleep(SWITCHOVER_SECONDS)
 
     say("Step 5 of 6", "testing the whole lab with one question (up to three minutes)")
     result = subprocess.run([sys.executable, "scripts/smoke_test.py"], cwd=REPO_ROOT, check=False)
     if result.returncode != 0:
-        return stop("the lab test did not pass. The FAIL line above names the broken part.")
+        return stop("the lab test did not pass. Next, run  python scripts/diagnose_phase1.py  "
+                    "and attach the report file it saves.")
 
     say("Step 6 of 6", "last step, in your browser")
     print("   In Vercel, open the artemis project > Settings > Environment Variables,")
