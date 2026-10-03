@@ -7,7 +7,20 @@ website; a team of AI agents running inside Omnigent turns it into a
 measurable experiment, runs it on real public data, and reports what it
 learned with citations.
 
-## Current phase: Phase 1, prove the plumbing
+## Status
+
+**Phase 1, prove the plumbing: complete** (October 3, 2026). A question typed
+on the live Vercel site starts a fresh Modal sandbox, Claude answers, and the
+reply streams back to the browser in about 20 seconds.
+
+**Phase 2, the real lab: next.** Flagship question: earth-abundant solar-cell
+absorber materials, screened with the Materials Project and NIST JARVIS.
+Models: Claude Opus 5.5 for planning, experiment design, the Skeptic and the
+report; Claude Haiku 4.5 for quick literature and data searches. See
+[`docs/decisions.md`](docs/decisions.md) and the design documents in
+[`docs/`](docs/).
+
+## Phase 1: how the plumbing works
 
 Phase 1 connects every piece of the system with one simple test agent, so
 any connection problem shows up in the first hours rather than the last.
@@ -27,6 +40,9 @@ Browser ──► Vercel relay (app.py) ──► Omnigent server (Modal) ──
 | `lab/agents/hello_lab/config.yaml` | The Phase 1 test agent (Claude Haiku 4.5, no tools) |
 | `scripts/make_secrets.py` | Generates secrets locally and pushes them to Modal |
 | `scripts/smoke_test.py` | Checks every hop and saves a timestamped record in `runs/` |
+| `scripts/run_phase1.py` | One command: settings, Modal, deploy, account, test, Vercel values |
+| `scripts/diagnose_phase1.py` | Records one test's events and Modal logs into a redacted report |
+| `docs/` | Design papers, guides, the decisions record, and their sources |
 
 ## Run Phase 1 (one command)
 
@@ -73,9 +89,8 @@ Omnigent secrets and Omnigent reads them from Modal when it starts.
 
 Secrets live only in `.env` (git-ignored), in Modal secrets, and in Vercel
 environment variables. The Anthropic key is injected into the agent
-sandboxes only; the Omnigent server never holds it. The website reaches
-Omnigent through a machine client whose token is scoped to session
-endpoints, and a visitor needs the access code to start a session.
+sandboxes only; the Omnigent server never holds it. A visitor needs the
+access code to start a session.
 
 The website logs in to Omnigent as a regular, non-admin account
 (`artemis-web`, created automatically by `run_phase1.py`). This matters:
