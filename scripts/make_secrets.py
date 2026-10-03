@@ -1,4 +1,4 @@
-"""Create and distribute the secrets Artemis Phase 1 needs.
+"""Create and distribute the secrets Artemis needs.
 
 Run everything from the repository root on your own computer, so secret
 values are generated locally and never pass through chat, email, or git.
@@ -7,6 +7,7 @@ values are generated locally and never pass through chat, email, or git.
     python scripts/make_secrets.py check    # validate .env without printing secrets
     python scripts/make_secrets.py modal    # push the two Modal secrets
     python scripts/make_secrets.py vercel   # show what to paste into Vercel
+    python scripts/make_secrets.py materials-project   # optional: add the Materials Project key
 
 What each subcommand does:
 
@@ -35,6 +36,11 @@ What each subcommand does:
     Prints the four variables to add under Vercel, Project Settings,
     Environment Variables. Two of them are secrets; copy them straight
     from your terminal into the Vercel dashboard.
+
+``materials-project``
+    Optional (Phase 2). Collects your Materials Project API key from the
+    clipboard, saves it to ``.env`` and to the ``artemis-llm`` Modal secret,
+    so the lab's Scout can cross-check candidate materials.
 """
 
 from __future__ import annotations
@@ -90,6 +96,14 @@ PROMPTS: dict[str, tuple[str, list[str], str]] = {
         ["Copy your key from console.anthropic.com. It starts with sk-ant-."],
         "an Anthropic key starting with sk-ant-",
     ),
+    "MP_API_KEY": (
+        "Materials Project API key",
+        [
+            "Sign in at next-gen.materialsproject.org, then open your Dashboard",
+            "(or go to next-gen.materialsproject.org/api) and copy the API key shown there.",
+        ],
+        "a Materials Project API key (a long run of letters and digits)",
+    ),
 }
 # What a valid value looks like, used to pick it out of whatever was copied.
 PATTERNS = {
@@ -97,6 +111,7 @@ PATTERNS = {
     "MODAL_TOKEN_ID": re.compile(r"\bak-[A-Za-z0-9]+"),
     "MODAL_TOKEN_SECRET": re.compile(r"\bas-[A-Za-z0-9]+"),
     "OMNIGENT_ANTHROPIC_API_KEY": re.compile(r"sk-ant-[A-Za-z0-9_\-]+"),
+    "MP_API_KEY": re.compile(r"(?<![A-Za-z0-9])[A-Za-z0-9]{16,64}(?![A-Za-z0-9])"),
 }
 # When a whole .env snippet is copied, prefer these lines, in this order.
 DATABASE_LINE_PREFERENCE = ["DATABASE_URL_UNPOOLED", "POSTGRES_URL_NON_POOLING", "DATABASE_URL", "POSTGRES_URL"]
@@ -114,8 +129,10 @@ DEPLOY_KEYS = [
     "MODAL_TOKEN_ID",
     "MODAL_TOKEN_SECRET",
 ]
-# Values injected into agent sandboxes only.
-LLM_KEYS = ["OMNIGENT_ANTHROPIC_API_KEY"]
+# Values injected into agent sandboxes only. MP_API_KEY is optional: without it
+# the lab still runs, but the Materials Project cross-check reports it is unavailable.
+LLM_KEYS = ["OMNIGENT_ANTHROPIC_API_KEY", "MP_API_KEY"]
+OPTIONAL_KEYS = {"MP_API_KEY"}
 # Values the Vercel relay needs. The website logs in to Omnigent as a regular,
 # non-admin account, because Omnigent only launches agents in managed
 # sandboxes for sessions owned by a real account.
@@ -157,6 +174,9 @@ MODAL_TOKEN_SECRET={MODAL_TOKEN_SECRET}
 # ---- Agent sandboxes (Modal secret: artemis-llm) ----
 # Your Anthropic API key. Only the sandboxes receive it; the server never does.
 OMNIGENT_ANTHROPIC_API_KEY={OMNIGENT_ANTHROPIC_API_KEY}
+# Optional: Materials Project API key for cross-checking candidate materials.
+# Add it with: python scripts/make_secrets.py materials-project
+MP_API_KEY={MP_API_KEY}
 
 # ---- Vercel relay (Vercel project environment variables) ----
 OMNIGENT_URL={OMNIGENT_URL}
@@ -288,8 +308,9 @@ def mask(key: str, value: str) -> str:
         parts = urlsplit(value)
         host = parts.hostname or "unknown host"
         return f"{parts.scheme}://(hidden)@{host}{parts.path}"
-    prefix = {"MODAL_TOKEN_ID": "ak-", "MODAL_TOKEN_SECRET": "as-", "OMNIGENT_ANTHROPIC_API_KEY": "sk-ant-"}[key]
-    shown = prefix if value.startswith(prefix) else value[:2]
+    prefix = {"MODAL_TOKEN_ID": "ak-", "MODAL_TOKEN_SECRET": "as-",
+              "OMNIGENT_ANTHROPIC_API_KEY": "sk-ant-"}.get(key, "")
+    shown = prefix if prefix and value.startswith(prefix) else value[:2]
     return f"{shown}... ({len(value)} characters)"
 
 
@@ -412,6 +433,7 @@ REENTER_GROUPS = {
     "database": ["DATABASE_URL"],
     "anthropic": ["OMNIGENT_ANTHROPIC_API_KEY"],
     "modal": ["MODAL_TOKEN_ID", "MODAL_TOKEN_SECRET"],
+    "materials": ["MP_API_KEY"],
 }
 
 
@@ -503,7 +525,7 @@ def validate(values: dict[str, str]) -> list[str]:
     """Return a list of human-readable problems with the .env values."""
     problems: list[str] = []
     for key in ALL_KEYS:
-        if not is_filled(values.get(key)):
+        if key not in OPTIONAL_KEYS and not is_filled(values.get(key)):
             problems.append(f"{key} is missing (run: python scripts/make_secrets.py init)")
     if problems:
         return problems
@@ -518,6 +540,8 @@ def validate(values: dict[str, str]) -> list[str]:
     for key in USER_KEYS:
         if not looks_valid(key, values[key]):
             problems.append(f"{key} does not look right; re-run init to enter it again")
+    if is_filled(values.get("MP_API_KEY")) and not looks_valid("MP_API_KEY", values["MP_API_KEY"]):
+        problems.append("MP_API_KEY does not look right; run: python scripts/make_secrets.py materials-project")
     for key in ("OMNIGENT_ACCOUNTS_BASE_URL", "OMNIGENT_URL"):
         if not values[key].startswith("https://"):
             problems.append(f"{key} must start with https://")
@@ -549,6 +573,10 @@ def cmd_check(_: argparse.Namespace) -> int:
     print(f"  Database: {mask('DATABASE_URL', values['DATABASE_URL'])}")
     print(f"  Modal token: {mask('MODAL_TOKEN_ID', values['MODAL_TOKEN_ID'])}")
     print(f"  Anthropic key: {describe_key(values['OMNIGENT_ANTHROPIC_API_KEY'])}")
+    if is_filled(values.get("MP_API_KEY")):
+        print(f"  Materials Project key: {mask('MP_API_KEY', values['MP_API_KEY'])}")
+    else:
+        print("  Materials Project key: not added (optional; python scripts/make_secrets.py materials-project)")
     print("Next: python scripts/make_secrets.py modal")
     return 0
 
@@ -579,8 +607,40 @@ def cmd_modal(_: argparse.Namespace) -> int:
         print("Fix .env first (python scripts/make_secrets.py check).")
         return 1
     run_modal_secret("artemis-omnigent-deploy", {k: values[k] for k in DEPLOY_KEYS})
-    run_modal_secret("artemis-llm", {k: values[k] for k in LLM_KEYS})
+    run_modal_secret("artemis-llm", {k: values[k] for k in LLM_KEYS if is_filled(values.get(k))})
     print("Next: modal deploy lab/modal_server.py")
+    return 0
+
+
+def cmd_materials_project(_: argparse.Namespace) -> int:
+    """Collect the Materials Project key via the clipboard and save it to Modal."""
+    values = read_env()
+    if not values:
+        print("No .env found. Run: python scripts/make_secrets.py init")
+        return 1
+    if not sys.stdin.isatty():
+        print("Run this command in a terminal window so it can read your clipboard.")
+        return 1
+    print("Nothing secret is shown here. (Do not press Ctrl+C in this window.)")
+    try:
+        answer = ask_value("MP_API_KEY")
+    except KeyboardInterrupt:
+        print("\nStopped. Nothing was changed.")
+        return 1
+    if not answer:
+        return 1
+    values = {key: values.get(key, "") for key in ALL_KEYS}
+    values["MP_API_KEY"] = answer
+    save_env(values)
+    print(f"Saved the Materials Project key to {ENV_PATH}")
+    problems = validate(values)
+    if problems:
+        print("The key is saved locally, but .env has other problems, so Modal was not updated:")
+        for problem in problems:
+            print(f"  - {problem}")
+        return 1
+    run_modal_secret("artemis-llm", {k: values[k] for k in LLM_KEYS if is_filled(values.get(k))})
+    print("The lab's agents will receive it the next time a session starts.")
     return 0
 
 
@@ -608,7 +668,8 @@ def main() -> int:
     init.add_argument("--reenter", nargs="+", choices=sorted(REENTER_GROUPS),
                       help="discard saved values and enter them again, e.g. --reenter anthropic database")
     init.set_defaults(func=cmd_init)
-    for name, func in (("check", cmd_check), ("modal", cmd_modal), ("vercel", cmd_vercel)):
+    for name, func in (("check", cmd_check), ("modal", cmd_modal), ("vercel", cmd_vercel),
+                       ("materials-project", cmd_materials_project)):
         sub.add_parser(name).set_defaults(func=func)
     args = parser.parse_args()
     return args.func(args)

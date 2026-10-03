@@ -3,7 +3,7 @@
   "functions": {
     "app.py": {
       "maxDuration": 800,
-      "excludeFiles": "{lab/modal_server.py,scripts/**,runs/**,docs/**,.env,.env.*}"
+      "excludeFiles": "{lab/modal_server.py,lab/solar/**,scripts/**,runs/**,docs/**,.env,.env.*}"
     }
   }
 }

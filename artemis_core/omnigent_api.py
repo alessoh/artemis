@@ -375,7 +375,13 @@ class OmnigentClient:
 
     # ── sessions ────────────────────────────────────────────────────
 
-    def create_session(self, bundle: bytes, title: str, host_type: str = "managed") -> str:
+    def create_session(
+        self,
+        bundle: bytes,
+        title: str,
+        host_type: str = "managed",
+        workspace: str | None = None,
+    ) -> str:
         """Create a session from an uploaded agent bundle.
 
         :param bundle: Gzipped agent tarball from :func:`build_agent_bundle`.
@@ -383,14 +389,22 @@ class OmnigentClient:
         :param host_type: ``"managed"`` (default) has the server provision a
             Modal sandbox for this session; ``"external"`` waits for a
             runner you start yourself, which is useful for local testing.
+        :param workspace: For a managed session, an optional public git URL
+            (``https://github.com/org/repo#branch``) that Omnigent clones
+            into the sandbox as the agent's working directory.
         :returns: The new session id.
-        :raises ValueError: For an unknown host type.
+        :raises ValueError: For an unknown host type, or a workspace on an
+            external session.
         """
         if host_type not in ("managed", "external"):
             raise ValueError(f"host_type must be 'managed' or 'external', got {host_type!r}")
         metadata: dict[str, Any] = {"title": title}
         if host_type != "external":
             metadata["host_type"] = host_type
+        if workspace:
+            if host_type != "managed":
+                raise ValueError("a git workspace is only supported for managed sessions")
+            metadata["workspace"] = workspace
         resp = self._request(
             "POST",
             "/v1/sessions",
