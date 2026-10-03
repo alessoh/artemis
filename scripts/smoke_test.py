@@ -261,9 +261,11 @@ def run_via_website(base_url: str, message: str, timeout_s: float, access_code: 
         recorder.record("Credentials accepted via website", bool(body.get("credentials_ok")), "")
 
         created = http.post(f"{base}/api/sessions", json={"access_code": access_code})
-        if not recorder.record("Session created via website", created.status_code == 200, created.text[:200]):
+        if created.status_code != 200:
+            recorder.record("Session created via website", False, created.text[:200])
             return {**result, "hops": recorder.hops}
         info = created.json()
+        recorder.record("Session created via website", True, info["session_id"])
         result["session_id"] = info["session_id"]
         token = {"t": info["stream_token"]}
 
