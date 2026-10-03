@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "app.py": {
+      "maxDuration": 800,
+      "excludeFiles": "{lab/modal_server.py,scripts/**,runs/**,docs/**,.env,.env.*}"
+    }
+  }
+}

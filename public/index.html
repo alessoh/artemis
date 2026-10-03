@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Artemis lab connection check</title>
+<meta name="description" content="Phase 1 of Artemis: confirm the website, Omnigent server, Modal sandbox, Claude model and live stream are connected.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #EEF2F5;
+    --grid: #DCE3EA;
+    --panel: #FFFFFF;
+    --ink: #14213D;
+    --muted: #5B6577;
+    --line: #C9D2DC;
+    --ok: #0F766E;
+    --wait: #B45309;
+    --fail: #9F1239;
+    --focus: #1F3A5F;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #101826; --grid: #18233A; --panel: #142033; --ink: #E7ECF3;
+      --muted: #9AA6B8; --line: #2A3A55; --ok: #34B3A6; --wait: #E3A04F; --fail: #F06C8C; --focus: #9EC1EA;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: "Instrument Sans", system-ui, sans-serif;
+    color: var(--ink);
+    background-color: var(--paper);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 28px 28px;
+    min-height: 100vh;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 40px 20px 64px; }
+  header { margin-bottom: 32px; max-width: 64ch; }
+  h1 { font-size: 2rem; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 8px; }
+  header p { color: var(--muted); margin: 0; font-size: 1.02rem; }
+
+  .layout { display: grid; grid-template-columns: 300px 1fr; gap: 28px; align-items: start; }
+  @media (max-width: 820px) { .layout { grid-template-columns: 1fr; } }
+
+  /* The signal path: the one memorable element on the page. */
+  .path { position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 20px; }
+  .path h2 { font-size: 0.95rem; font-weight: 600; margin: 0 0 16px; color: var(--muted); }
+  .stations { list-style: none; margin: 0; padding: 0; position: relative; }
+  .stations::before {
+    content: ""; position: absolute; left: 11px; top: 14px; bottom: 14px; width: 2px; background: var(--line);
+  }
+  .station { position: relative; display: grid; grid-template-columns: 24px 1fr auto; gap: 12px; padding: 10px 0; }
+  .dot {
+    width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--line); background: var(--panel);
+    position: relative; z-index: 1; transition: background-color .25s, border-color .25s;
+  }
+  .station[data-state="wait"] .dot { border-color: var(--wait); background: color-mix(in srgb, var(--wait) 22%, var(--panel)); }
+  .station[data-state="ok"] .dot { border-color: var(--ok); background: var(--ok); }
+  .station[data-state="fail"] .dot { border-color: var(--fail); background: var(--fail); }
+  .station-name { font-weight: 600; font-size: 0.98rem; }
+  .station-note { color: var(--muted); font-size: 0.86rem; display: block; }
+  .station-time { color: var(--muted); font-size: 0.82rem; font-variant-numeric: tabular-nums; padding-top: 2px; }
+  @media (prefers-reduced-motion: reduce) { .dot { transition: none; } }
+
+  .bench { display: grid; gap: 20px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px; }
+  .card h2 { font-size: 1.05rem; font-weight: 600; margin: 0 0 4px; }
+  .card .hint { color: var(--muted); font-size: 0.9rem; margin: 0 0 14px; }
+
+  label { display: block; font-size: 0.9rem; font-weight: 500; margin: 12px 0 6px; }
+  textarea, input {
+    width: 100%; font: inherit; color: var(--ink); background: var(--paper);
+    border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
+  }
+  textarea { min-height: 84px; resize: vertical; }
+  textarea:focus-visible, input:focus-visible, button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+  button {
+    font: inherit; font-weight: 600; border-radius: 10px; padding: 10px 18px; cursor: pointer;
+    border: 1px solid var(--ink); background: var(--ink); color: var(--panel);
+  }
+  button.secondary { background: transparent; color: var(--ink); }
+  button[disabled] { opacity: .5; cursor: not-allowed; }
+
+  .reply {
+    font-family: "Newsreader", Georgia, serif; font-size: 1.2rem; line-height: 1.6;
+    white-space: pre-wrap; min-height: 3.2em; max-width: 68ch;
+  }
+  .empty { color: var(--muted); font-style: italic; }
+
+  .log { list-style: none; margin: 0; padding: 0; max-height: 300px; overflow: auto; font-size: 0.86rem; }
+  .log li { display: grid; grid-template-columns: 64px 1fr; gap: 10px; padding: 6px 0; border-top: 1px solid var(--line); }
+  .log li:first-child { border-top: 0; }
+  .log time { color: var(--muted); font-variant-numeric: tabular-nums; }
+  .log .bad { color: var(--fail); }
+  .status-line { font-size: 0.9rem; color: var(--muted); margin-top: 12px; min-height: 1.4em; }
+  .status-line.bad { color: var(--fail); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Artemis lab connection check</h1>
+    <p>Send one question through the whole lab. Each station on the path lights up only when a real event from that part of the system arrives.</p>
+  </header>
+
+  <div class="layout">
+    <aside class="path" aria-labelledby="path-title">
+      <h2 id="path-title">Signal path</h2>
+      <ol class="stations">
+        <li class="station" id="hop-website" data-state="idle"><span class="dot" aria-hidden="true"></span>
+          <span><span class="station-name">Website</span><span class="station-note">Vercel relay</span></span><span class="station-time"></span></li>
+        <li class="station" id="hop-server" data-state="idle"><span class="dot" aria-hidden="true"></span>
+          <span><span class="station-name">Omnigent server</span><span class="station-note">Modal, switchboard</span></span><span class="station-time"></span></li>
+        <li class="station" id="hop-sandbox" data-state="idle"><span class="dot" aria-hidden="true"></span>
+          <span><span class="station-name">Agent sandbox</span><span class="station-note">Modal, lab bench</span></span><span class="station-time"></span></li>
+        <li class="station" id="hop-model" data-state="idle"><span class="dot" aria-hidden="true"></span>
+          <span><span class="station-name">Claude model</span><span class="station-note">Anthropic API</span></span><span class="station-time"></span></li>
+        <li class="station" id="hop-stream" data-state="idle"><span class="dot" aria-hidden="true"></span>
+          <span><span class="station-name">Live stream</span><span class="station-note">events back to you</span></span><span class="station-time"></span></li>
+      </ol>
+    </aside>
+
+    <main class="bench">
+      <section class="card" aria-labelledby="ask-title">
+        <h2 id="ask-title">Ask the test agent</h2>
+        <p class="hint">The agent restates your question and names one public database that could help. It has no tools and invents no data.</p>
+        <form id="ask-form">
+          <label for="message">Question</label>
+          <textarea id="message" required maxlength="4000">Which earth-abundant materials could make efficient solar cells?</textarea>
+          <label for="code">Access code</label>
+          <input id="code" type="password" autocomplete="off" required>
+          <div class="row">
+            <button type="submit" id="run">Run the check</button>
+            <button type="button" class="secondary" id="end" disabled>End session</button>
+          </div>
+          <p class="status-line" id="status" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section class="card" aria-labelledby="reply-title">
+        <h2 id="reply-title">Agent reply</h2>
+        <div class="reply empty" id="reply">No reply yet. Run the check to start a session.</div>
+      </section>
+
+      <section class="card" aria-labelledby="log-title">
+        <h2 id="log-title">Event log</h2>
+        <p class="hint">Raw events relayed from Omnigent, with seconds since you pressed Run.</p>
+        <ul class="log" id="log"><li><time></time><span class="empty">Nothing has happened yet.</span></li></ul>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script>
+(() => {
+  "use strict";
+  const $ = (id) => document.getElementById(id);
+  const statusEl = $("status"), logEl = $("log"), replyEl = $("reply");
+  let t0 = performance.now(), source = null, session = null, logStarted = false, finished = false;
+
+  const secs = () => ((performance.now() - t0) / 1000).toFixed(1);
+
+  function setHop(name, state, note) {
+    const el = $("hop-" + name);
+    if (!el) return;
+    const order = { idle: 0, wait: 1, ok: 2, fail: 3 };
+    if (order[state] < order[el.dataset.state] && el.dataset.state !== "wait") return;
+    el.dataset.state = state;
+    // Website and server are checked on page load, so only time the run-phase stations.
+    const timed = name !== "website" && name !== "server";
+    if (timed && (state === "ok" || state === "fail")) el.querySelector(".station-time").textContent = secs() + " s";
+    if (!note && state === "ok" && name === "sandbox") note = "ready";
+    if (note) el.querySelector(".station-note").textContent = note;
+  }
+
+  function log(text, bad) {
+    if (!logStarted) { logEl.innerHTML = ""; logStarted = true; }
+    const li = document.createElement("li");
+    li.innerHTML = "<time></time><span></span>";
+    li.querySelector("time").textContent = secs() + " s";
+    const span = li.querySelector("span");
+    span.textContent = text;
+    if (bad) span.className = "bad";
+    logEl.appendChild(li);
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  function say(text, bad) { statusEl.textContent = text; statusEl.className = "status-line" + (bad ? " bad" : ""); }
+
+  async function checkStatus() {
+    try {
+      const res = await fetch("/api/status", { cache: "no-store" });
+      const body = await res.json();
+      setHop("website", res.ok ? "ok" : "fail");
+      if (!body.configured) { setHop("server", "fail", "relay not configured"); say("The relay has no Omnigent settings yet: " + body.detail, true); return; }
+      if (body.server_ok && body.credentials_ok) setHop("server", "ok", "reachable, credentials accepted");
+      else { setHop("server", "fail", body.server_ok ? "credentials rejected" : "not reachable"); say(body.detail || "Omnigent server check failed.", true); }
+    } catch (err) {
+      setHop("website", "fail"); say("Could not reach the website backend: " + err, true);
+    }
+  }
+
+  function handleEvent(ev) {
+    const type = ev.type || "?";
+    if (type === "artemis.relay") {
+      if (ev.state === "connected") { setHop("stream", "wait", "relay connected"); log("Relay connected to Omnigent stream"); if (relayReady) relayReady(); }
+      else if (ev.state === "rotating") log("Relay connection rotating (normal, reconnecting)");
+      else { log("Relay upstream error " + (ev.status || ""), true); }
+      return;
+    }
+    setHop("stream", "ok", "events arriving");
+    if (type === "session.sandbox_status") {
+      log("Sandbox stage: " + ev.stage, ev.stage === "failed");
+      if (ev.stage === "failed") { setHop("sandbox", "fail", ev.error || "launch failed"); say("Sandbox launch failed: " + (ev.error || "unknown"), true); }
+      else if (ev.stage === "ready") setHop("sandbox", "ok", "ready");
+      else setHop("sandbox", "wait", ev.stage);
+      return;
+    }
+    if (type === "response.output_text.delta") {
+      if ($("hop-model").dataset.state !== "ok") { setHop("sandbox", "ok"); setHop("model", "ok", "replying"); log("First text from Claude"); replyEl.textContent = ""; replyEl.classList.remove("empty"); }
+      replyEl.textContent += ev.delta || "";
+      return;
+    }
+    if (type === "turn.started") { setHop("model", "wait", "thinking"); }
+    if (type === "response.error" || type === "turn.failed" || type === "response.failed") {
+      const detail = JSON.stringify(ev.error || (ev.response && ev.response.error) || ev).slice(0, 240);
+      setHop("model", "fail", "error"); log(type + ": " + detail, true); say("The agent reported an error. See the event log.", true);
+    }
+    if (type === "turn.completed" || type === "response.completed") {
+      if (!finished) { finished = true; log(type); say("All stations reported in. The lab is connected end to end."); }
+      return;
+    }
+    if (!type.endsWith(".delta") && type !== "session.heartbeat" && type !== "response.heartbeat") log(type);
+  }
+
+  let relayReady = null;
+  function openStream() {
+    const url = `/api/sessions/${encodeURIComponent(session.session_id)}/stream?t=${encodeURIComponent(session.stream_token)}`;
+    let resolveReady;
+    const ready = new Promise((r) => { resolveReady = r; });
+    relayReady = resolveReady;
+    setTimeout(resolveReady, 5000);
+    source = new EventSource(url);
+    source.onmessage = (m) => { try { handleEvent(JSON.parse(m.data)); } catch (_) {} };
+    // Omnigent names its events, so listen for any named event too.
+    const named = ["artemis.relay","session.sandbox_status","session.status","turn.started","turn.completed","turn.failed",
+      "response.created","response.in_progress","response.output_text.delta","response.output_item.done","response.completed",
+      "response.failed","response.error","session.usage","session.model","session.title"];
+    named.forEach((n) => source.addEventListener(n, (m) => { try { handleEvent(JSON.parse(m.data)); } catch (_) {} }));
+    source.onerror = () => { if (finished) { source.close(); } };
+    return ready;
+  }
+
+  $("ask-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (source) source.close();
+    t0 = performance.now(); finished = false; logStarted = false;
+    ["sandbox", "model", "stream"].forEach((h) => { const el = $("hop-" + h); el.dataset.state = "idle"; el.querySelector(".station-time").textContent = ""; });
+    replyEl.textContent = "Waiting for the agent."; replyEl.classList.add("empty");
+    $("run").disabled = true; say("Creating a lab session.");
+    try {
+      const res = await fetch("/api/sessions", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ access_code: $("code").value }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) { say(body.detail || ("Session request failed with HTTP " + res.status), true); $("run").disabled = false; return; }
+      session = body; log("Session created: " + session.session_id);
+      setHop("sandbox", "wait", "provisioning");
+      $("end").disabled = false;
+      await openStream();
+      say("Stream open. Sending your question; the sandbox may take up to two minutes to start.");
+      const sent = await fetch(`/api/sessions/${encodeURIComponent(session.session_id)}/message?t=${encodeURIComponent(session.stream_token)}`, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: $("message").value }),
+      });
+      const ack = await sent.json().catch(() => ({}));
+      if (!sent.ok) { say(ack.detail || ("Sending the message failed with HTTP " + sent.status), true); }
+      else { log("Message delivered to the agent"); if (!finished) say("Message delivered. Waiting for the agent's reply."); }
+    } catch (err) { say("Request failed: " + err, true); }
+    $("run").disabled = false;
+  });
+
+  $("end").addEventListener("click", async () => {
+    if (!session) return;
+    if (source) source.close();
+    const res = await fetch(`/api/sessions/${encodeURIComponent(session.session_id)}?t=${encodeURIComponent(session.stream_token)}`, { method: "DELETE" });
+    log(res.ok ? "Session ended, sandbox terminated" : "Ending the session failed (HTTP " + res.status + ")", !res.ok);
+    $("end").disabled = true; session = null;
+  });
+
+  checkStatus();
+})();
+</script>
+</body>
+</html>

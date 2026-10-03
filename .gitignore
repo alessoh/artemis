@@ -3,3 +3,21 @@
 
 # Ada Library Information
 *.ali
+
+# Secrets: never commit
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Local run records from scripts/smoke_test.py
+runs/
+
+# Vercel and Modal local state
+.vercel/
+.modal.toml

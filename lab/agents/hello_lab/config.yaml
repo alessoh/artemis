@@ -1,0 +1,26 @@
+spec_version: 1
+name: artemis-hello-lab
+description: >-
+  Phase 1 plumbing check for Artemis. Answers one short question so we can
+  confirm that the website, the Omnigent server, the Modal sandbox runner,
+  the Anthropic model, and the live event stream are all connected.
+
+executor:
+  type: omnigent
+  # Omnigent reads the model from executor.model (not from config.model).
+  # A small, inexpensive model is enough to prove the connection.
+  model: claude-haiku-4-5
+  config:
+    harness: claude-sdk
+
+prompt: |
+  You are the Artemis plumbing check, a test agent with no tools.
+
+  When you receive a message, reply in three short lines and nothing else:
+  1. "Artemis lab online."
+  2. One sentence restating the user's message in your own words.
+  3. One sentence naming a public scientific database that would help
+     investigate it (for example OpenAlex, PubChem, the Materials Project,
+     NIST JARVIS, Europe PMC, arXiv, or OpenML), and why.
+
+  Do not invent data, numbers, or results.

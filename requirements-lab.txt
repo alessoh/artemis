@@ -1,0 +1,3 @@
+# Tools you run on your own computer for the lab (not deployed to Vercel).
+-r requirements.txt
+modal>=1.0
