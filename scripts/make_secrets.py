@@ -116,15 +116,20 @@ DEPLOY_KEYS = [
 ]
 # Values injected into agent sandboxes only.
 LLM_KEYS = ["OMNIGENT_ANTHROPIC_API_KEY"]
-# Values the Vercel relay needs.
+# Values the Vercel relay needs. The website logs in to Omnigent as a regular,
+# non-admin account, because Omnigent only launches agents in managed
+# sandboxes for sessions owned by a real account.
 VERCEL_KEYS = [
     "OMNIGENT_URL",
-    "OMNIGENT_MACHINE_CLIENT_ID",
-    "OMNIGENT_MACHINE_CLIENT_SECRET",
+    "OMNIGENT_USERNAME",
+    "OMNIGENT_PASSWORD",
     "ARTEMIS_ACCESS_CODE",
 ]
-VERCEL_SECRET_KEYS = {"OMNIGENT_MACHINE_CLIENT_SECRET", "ARTEMIS_ACCESS_CODE"}
-ALL_KEYS = sorted(set(DEPLOY_KEYS + LLM_KEYS + VERCEL_KEYS))
+VERCEL_SECRET_KEYS = {"OMNIGENT_PASSWORD", "ARTEMIS_ACCESS_CODE"}
+WEB_ACCOUNT_USERNAME = "artemis-web"
+# Kept locally only: the raw machine client secret (server stores its digest).
+LOCAL_ONLY_KEYS = ["OMNIGENT_MACHINE_CLIENT_SECRET"]
+ALL_KEYS = sorted(set(DEPLOY_KEYS + LLM_KEYS + VERCEL_KEYS + LOCAL_ONLY_KEYS))
 
 ENV_TEMPLATE = """\
 # Artemis secrets. This file is git-ignored. Never commit it or paste it into chat.
@@ -155,10 +160,15 @@ OMNIGENT_ANTHROPIC_API_KEY={OMNIGENT_ANTHROPIC_API_KEY}
 
 # ---- Vercel relay (Vercel project environment variables) ----
 OMNIGENT_URL={OMNIGENT_URL}
-# Raw machine client secret; the server stores only its HMAC digest above.
-OMNIGENT_MACHINE_CLIENT_SECRET={OMNIGENT_MACHINE_CLIENT_SECRET}
+# The regular Omnigent account the website logs in as (created automatically).
+OMNIGENT_USERNAME={OMNIGENT_USERNAME}
+OMNIGENT_PASSWORD={OMNIGENT_PASSWORD}
 # Code a visitor must enter before the website will start a lab session.
 ARTEMIS_ACCESS_CODE={ARTEMIS_ACCESS_CODE}
+
+# ---- Local only ----
+# Raw machine client secret; the server stores only its HMAC digest above.
+OMNIGENT_MACHINE_CLIENT_SECRET={OMNIGENT_MACHINE_CLIENT_SECRET}
 """
 
 
@@ -425,6 +435,8 @@ def cmd_init(args: argparse.Namespace) -> int:
     keep_or("OMNIGENT_MACHINE_SUB", MACHINE_SUB)
     keep_or("OMNIGENT_MACHINE_CLIENT_SECRET", secrets.token_urlsafe(32))
     keep_or("ARTEMIS_ACCESS_CODE", secrets.token_urlsafe(9))
+    keep_or("OMNIGENT_USERNAME", WEB_ACCOUNT_USERNAME)
+    keep_or("OMNIGENT_PASSWORD", secrets.token_urlsafe(24))
     keep_or("OMNIGENT_ACCOUNTS_BASE_URL", DEFAULT_OMNIGENT_URL)
     keep_or("OMNIGENT_URL", values["OMNIGENT_ACCOUNTS_BASE_URL"])
     # The digest always follows the current cookie secret and client secret.
@@ -490,7 +502,7 @@ def cmd_init(args: argparse.Namespace) -> int:
 def validate(values: dict[str, str]) -> list[str]:
     """Return a list of human-readable problems with the .env values."""
     problems: list[str] = []
-    for key in DEPLOY_KEYS + LLM_KEYS + VERCEL_KEYS:
+    for key in ALL_KEYS:
         if not is_filled(values.get(key)):
             problems.append(f"{key} is missing (run: python scripts/make_secrets.py init)")
     if problems:
@@ -514,6 +526,10 @@ def validate(values: dict[str, str]) -> list[str]:
     reserved = {"admin", "local", "public", values["OMNIGENT_ACCOUNTS_INIT_ADMIN_USERNAME"]}
     if values["OMNIGENT_MACHINE_SUB"] in reserved:
         problems.append("OMNIGENT_MACHINE_SUB must be a distinct, non-admin name")
+    if values["OMNIGENT_USERNAME"] in reserved | {values["OMNIGENT_MACHINE_SUB"]}:
+        problems.append("OMNIGENT_USERNAME must differ from the admin and machine names")
+    if len(values["OMNIGENT_PASSWORD"]) < 12:
+        problems.append("OMNIGENT_PASSWORD must be at least 12 characters; re-run init")
     return problems
 
 

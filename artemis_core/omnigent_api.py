@@ -4,12 +4,12 @@ Artemis talks to Omnigent the same way in two places: the Vercel relay
 (``app.py``) and the command-line smoke test (``scripts/smoke_test.py``).
 Both import this module, so the wire protocol lives in exactly one file.
 
-Authentication uses Omnigent's OAuth 2.0 client-credentials grant
-(``POST /oauth/token`` with ``grant_type=client_credentials``). The server
-mints a short-lived, path-scoped bearer token that may reach only
-``/v1/sessions``, ``/v1/agents``, ``/v1/hosts``, ``/v1/runners``,
-``/v1/skills`` and ``/health``. The raw client secret never leaves the
-caller's environment; the server stores only its HMAC digest.
+Authentication: the website logs in as a regular, non-admin Omnigent
+account (``POST /auth/login``) and sends the returned session token as a
+bearer token. A real account is required because Omnigent only launches
+agents in managed sandboxes for sessions owned by a live account; sessions
+created by the OAuth machine client are refused at launch. The machine
+client (``POST /oauth/token``) remains supported for read-only checks.
 
 Session flow (verified against Omnigent 0.16.0 source):
 
@@ -75,44 +75,66 @@ class OmnigentAPIError(RuntimeError):
 class OmnigentSettings:
     """Connection settings for one Omnigent server.
 
+    Two ways to authenticate are supported. The preferred one is a regular
+    Omnigent user account (``username`` and ``password``): Omnigent only
+    launches agents in managed sandboxes for sessions owned by a real
+    account. The OAuth machine client (``client_id`` and ``client_secret``)
+    is kept for read-only checks and older setups.
+
     :param base_url: Public HTTPS URL of the Omnigent server, without a
         trailing slash, e.g. ``https://alessoh--artemis-omnigent-server.modal.run``.
     :param client_id: Machine client identifier configured on the server.
     :param client_secret: Raw machine client secret (never logged).
+    :param username: Omnigent account used by the website, e.g. ``artemis-web``.
+    :param password: That account's password (never logged).
     """
 
     base_url: str
-    client_id: str
-    client_secret: str
+    client_id: str = ""
+    client_secret: str = ""
+    username: str = ""
+    password: str = ""
+
+    @property
+    def uses_account(self) -> bool:
+        """True when this client logs in as a regular Omnigent account."""
+        return bool(self.username and self.password)
 
     @classmethod
     def from_env(cls, environ: dict[str, str] | None = None) -> OmnigentSettings:
         """Build settings from environment variables.
 
-        Reads ``OMNIGENT_URL``, ``OMNIGENT_MACHINE_CLIENT_ID`` and
-        ``OMNIGENT_MACHINE_CLIENT_SECRET``.
+        Reads ``OMNIGENT_URL`` plus either ``OMNIGENT_USERNAME`` and
+        ``OMNIGENT_PASSWORD`` (preferred) or ``OMNIGENT_MACHINE_CLIENT_ID``
+        and ``OMNIGENT_MACHINE_CLIENT_SECRET``.
 
         :param environ: Mapping to read from; defaults to ``os.environ``.
         :returns: Validated settings.
-        :raises OmnigentConfigError: If any value is missing or the URL is
-            not an http(s) URL.
+        :raises OmnigentConfigError: If the URL or both credential pairs are
+            missing, or the URL is not an http(s) URL.
         """
         env = environ if environ is not None else os.environ
-        missing = [
-            name
-            for name in ("OMNIGENT_URL", "OMNIGENT_MACHINE_CLIENT_ID", "OMNIGENT_MACHINE_CLIENT_SECRET")
-            if not env.get(name, "").strip()
-        ]
-        if missing:
-            raise OmnigentConfigError("Missing environment variables: " + ", ".join(missing))
-        base_url = env["OMNIGENT_URL"].strip().rstrip("/")
+
+        def get(name: str) -> str:
+            return (env.get(name) or "").strip()
+
+        base_url = get("OMNIGENT_URL").rstrip("/")
+        if not base_url:
+            raise OmnigentConfigError("Missing environment variables: OMNIGENT_URL")
         if not base_url.startswith(("https://", "http://")):
             raise OmnigentConfigError("OMNIGENT_URL must start with https:// or http://")
-        return cls(
+        settings = cls(
             base_url=base_url,
-            client_id=env["OMNIGENT_MACHINE_CLIENT_ID"].strip(),
-            client_secret=env["OMNIGENT_MACHINE_CLIENT_SECRET"].strip(),
+            client_id=get("OMNIGENT_MACHINE_CLIENT_ID"),
+            client_secret=get("OMNIGENT_MACHINE_CLIENT_SECRET"),
+            username=get("OMNIGENT_USERNAME"),
+            password=get("OMNIGENT_PASSWORD"),
         )
+        if not settings.uses_account and not (settings.client_id and settings.client_secret):
+            raise OmnigentConfigError(
+                "Missing environment variables: OMNIGENT_USERNAME and OMNIGENT_PASSWORD"
+            )
+        return settings
 
 
 def build_agent_bundle(agent_dir: Path) -> bytes:
@@ -145,6 +167,75 @@ def build_agent_bundle(agent_dir: Path) -> bytes:
         with tarfile.open(fileobj=gz, mode="w") as tar:
             tar.add(str(agent_dir), arcname=".", filter=_filter)
     return buf.getvalue()
+
+
+def login(http: httpx.Client, base_url: str, username: str, password: str) -> tuple[str, int]:
+    """Log in to an Omnigent accounts server and return its session token.
+
+    The token is the same signed session token the Omnigent web UI keeps in
+    its cookie; the server also accepts it as ``Authorization: Bearer``.
+
+    :returns: ``(token, expires_in_seconds)``.
+    :raises OmnigentAPIError: On a network failure or rejected login.
+    """
+    try:
+        resp = http.post(f"{base_url}/auth/login", json={"username": username, "password": password})
+    except httpx.HTTPError as exc:
+        raise OmnigentAPIError("Login network error", 0, repr(exc)) from exc
+    if resp.status_code != 200:
+        raise OmnigentAPIError(f"Login as {username!r} failed", resp.status_code, resp.text)
+    payload = resp.json()
+    token = payload.get("token")
+    if not isinstance(token, str) or not token:
+        raise OmnigentAPIError("Login response had no token", resp.status_code, resp.text)
+    return token, int(payload.get("expires_in", 8 * 3600))
+
+
+def ensure_account(
+    base_url: str,
+    admin_username: str,
+    admin_password: str,
+    username: str,
+    password: str,
+    http: httpx.Client | None = None,
+) -> str:
+    """Make sure a regular (non-admin) Omnigent account exists and can log in.
+
+    Uses the admin login to mint a single-use invite, then registers the
+    account with it, the same steps an admin takes in the Omnigent web UI.
+
+    :returns: ``"exists"`` if the account already worked, else ``"created"``.
+    :raises OmnigentAPIError: If the admin login, invite or registration fails.
+    """
+    own = http or httpx.Client(timeout=_DEFAULT_TIMEOUT, follow_redirects=False)
+    try:
+        try:
+            login(own, base_url, username, password)
+            return "exists"
+        except OmnigentAPIError as exc:
+            if exc.status_code != 401:
+                raise
+        admin_token, _ = login(own, base_url, admin_username, admin_password)
+        headers = {"Authorization": f"Bearer {admin_token}"}
+        invite = own.post(f"{base_url}/auth/invite", json={"is_admin": False}, headers=headers)
+        if invite.status_code != 200:
+            raise OmnigentAPIError("Creating an invite failed", invite.status_code, invite.text)
+        token = invite.json().get("token", "")
+        reg = own.post(
+            f"{base_url}/auth/register",
+            json={"invite": token, "username": username, "password": password},
+        )
+        if reg.status_code == 409:
+            raise OmnigentAPIError(
+                f"Account {username!r} already exists with a different password", 409, reg.text
+            )
+        if reg.status_code != 200:
+            raise OmnigentAPIError(f"Registering {username!r} failed", reg.status_code, reg.text)
+        login(own, base_url, username, password)
+        return "created"
+    finally:
+        if http is None:
+            own.close()
 
 
 class _TokenCache:
@@ -191,11 +282,13 @@ class OmnigentClient:
     # ── authentication ──────────────────────────────────────────────
 
     def _mint_token(self) -> tuple[str, int]:
-        """Exchange the machine credentials for an access token.
+        """Obtain an access token: account login if configured, else machine client.
 
         :returns: ``(access_token, expires_in_seconds)``.
         :raises OmnigentAPIError: If the server rejects the credentials.
         """
+        if self.settings.uses_account:
+            return login(self._http, self.settings.base_url, self.settings.username, self.settings.password)
         try:
             resp = self._http.post(
                 f"{self.settings.base_url}/oauth/token",

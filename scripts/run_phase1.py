@@ -33,7 +33,9 @@ from pathlib import Path
 import httpx
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import make_secrets as ms  # noqa: E402
+from artemis_core.omnigent_api import OmnigentAPIError, ensure_account  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 URL_RE = re.compile(r"https://[a-z0-9-]+\.modal\.run")
@@ -174,6 +176,19 @@ def main() -> int:
         # container, and a launch started there is lost when it stops.
         print(f"   Letting Modal finish switching to the new server ({SWITCHOVER_SECONDS} seconds).")
         time.sleep(SWITCHOVER_SECONDS)
+
+    say("Account", f"making sure the website's Omnigent account '{values['OMNIGENT_USERNAME']}' exists")
+    try:
+        outcome = ensure_account(
+            url,
+            values["OMNIGENT_ACCOUNTS_INIT_ADMIN_USERNAME"],
+            values["OMNIGENT_ACCOUNTS_INIT_ADMIN_PASSWORD"],
+            values["OMNIGENT_USERNAME"],
+            values["OMNIGENT_PASSWORD"],
+        )
+    except OmnigentAPIError as exc:
+        return stop(f"could not set up the website's Omnigent account: {str(exc)[:300]}")
+    print("   Account " + ("already set up." if outcome == "exists" else "created and verified."))
 
     say("Step 5 of 6", "testing the whole lab with one question (up to three minutes)")
     result = subprocess.run([sys.executable, "scripts/smoke_test.py"], cwd=REPO_ROOT, check=False)

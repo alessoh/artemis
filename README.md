@@ -76,3 +76,9 @@ environment variables. The Anthropic key is injected into the agent
 sandboxes only; the Omnigent server never holds it. The website reaches
 Omnigent through a machine client whose token is scoped to session
 endpoints, and a visitor needs the access code to start a session.
+
+The website logs in to Omnigent as a regular, non-admin account
+(`artemis-web`, created automatically by `run_phase1.py`). This matters:
+Omnigent only launches agents in managed Modal sandboxes for sessions owned
+by a real account, and silently leaves machine-client sessions stuck at
+"connecting".
