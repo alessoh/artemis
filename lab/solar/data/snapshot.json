@@ -1,0 +1,90 @@
+{
+  "file": "solar_snapshot.csv.gz",
+  "sha256": "619cccd405318aae86f25b347f025ffbeadf8f8e237f9f03f06949007625c1bc",
+  "csv_sha256": "bb1270ca36818d51710a74ee104f13984d243fc8c2e22726d8054b502fadceee",
+  "rows": 55716,
+  "rows_per_split": {
+    "test": 906,
+    "train": 7250,
+    "unlabeled": 46655,
+    "val": 905
+  },
+  "columns": [
+    "jid",
+    "split",
+    "formula",
+    "composition",
+    "elements",
+    "n_elements",
+    "nat",
+    "spg_number",
+    "spg_symbol",
+    "crys",
+    "density",
+    "volume_per_atom",
+    "optb88vdw_bandgap",
+    "formation_energy_peratom",
+    "ehull",
+    "mbj_bandgap",
+    "slme"
+  ],
+  "built_utc": "2026-10-03T23:39:44Z",
+  "sources": [
+    {
+      "name": "dft_3d_slme.json.zip",
+      "url": "https://raw.githubusercontent.com/usnistgov/jarvis_leaderboard/57afc55f94c8a6f4562f73a3173968cd4b2f83b1/jarvis_leaderboard/benchmarks/AI/SinglePropertyPrediction/dft_3d_slme.json.zip",
+      "sha256": "f929bd463c98af317d98de6641c48f6347e6a069af03a3d6266c3bd3cafc049a",
+      "bytes": 48039
+    },
+    {
+      "name": "dft_3d_optb88vdw_bandgap.json.zip",
+      "url": "https://raw.githubusercontent.com/usnistgov/jarvis_leaderboard/57afc55f94c8a6f4562f73a3173968cd4b2f83b1/jarvis_leaderboard/benchmarks/AI/SinglePropertyPrediction/dft_3d_optb88vdw_bandgap.json.zip",
+      "sha256": "6d9f7f6a7c321497649afa10f11e5e3b17f5ae7de4ff508e5e1ec2ee7cfb59e9",
+      "bytes": 260687
+    },
+    {
+      "name": "dft_3d_formation_energy_peratom.json.zip",
+      "url": "https://raw.githubusercontent.com/usnistgov/jarvis_leaderboard/57afc55f94c8a6f4562f73a3173968cd4b2f83b1/jarvis_leaderboard/benchmarks/AI/SinglePropertyPrediction/dft_3d_formation_energy_peratom.json.zip",
+      "sha256": "ffaef5d3512a29c93f005c8b9f014b467dfa561b1c23632524ff91bbfa6f759f",
+      "bytes": 408864
+    },
+    {
+      "name": "dft_3d_ehull.json.zip",
+      "url": "https://raw.githubusercontent.com/usnistgov/jarvis_leaderboard/57afc55f94c8a6f4562f73a3173968cd4b2f83b1/jarvis_leaderboard/benchmarks/AI/SinglePropertyPrediction/dft_3d_ehull.json.zip",
+      "sha256": "25b7ca5c43f5dd54fc98ff01e46bc42033e22d0b9e20048d90d628ea35e169ff",
+      "bytes": 590007
+    },
+    {
+      "name": "dft_3d_mbj_bandgap.json.zip",
+      "url": "https://raw.githubusercontent.com/usnistgov/jarvis_leaderboard/57afc55f94c8a6f4562f73a3173968cd4b2f83b1/jarvis_leaderboard/benchmarks/AI/SinglePropertyPrediction/dft_3d_mbj_bandgap.json.zip",
+      "sha256": "7aee71bfea2f67e10a9aad4cc6b83636b58e09b46e01c713a82a333e9632fd95",
+      "bytes": 91819
+    },
+    {
+      "name": "jdft_3d-8-18-2021.json.zip",
+      "url": "https://ndownloader.figshare.com/files/29204826",
+      "sha256": "03e5af365067117d97c73b83fc74b86f79cdba4cc592b346f5aa2209a24c3925",
+      "bytes": 31911815
+    }
+  ],
+  "citations": [
+    "Choudhary et al., npj Computational Materials 10, 93 (2024), JARVIS-Leaderboard; github.com/usnistgov/jarvis_leaderboard at commit 57afc55f94c8a6f4562f73a3173968cd4b2f83b1",
+    "Choudhary et al., npj Computational Materials 6, 173 (2020); JARVIS-DFT 3D release 2021-08-18, figshare doi:10.6084/m9.figshare.6815699"
+  ],
+  "checks": {
+    "benchmark_materials": 9061,
+    "listed_in_two_splits_kept_in_earliest": [
+      "JVASP-96735"
+    ],
+    "missing_from_dft3d_release": 0,
+    "missing_examples": [],
+    "slme_differs_from_release_by_more_than_0.01": 0,
+    "unlabeled_materials": 46655,
+    "slme_known_but_outside_benchmark_left_out": 2,
+    "labeled_missing_optb88vdw_bandgap": 1,
+    "labeled_missing_ehull": 14,
+    "labeled_missing_formation_energy": 1,
+    "labeled_missing_mbj_bandgap": 608,
+    "missing_elements": 0
+  }
+}
