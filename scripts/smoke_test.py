@@ -144,7 +144,6 @@ def consume(events: queue.Queue, recorder: HopRecorder, timeout_s: float) -> dic
     :returns: Summary with the reply text, stages seen and event counts.
     """
     summary: dict[str, Any] = {"reply": "", "stages": [], "event_types": {}, "terminal": None, "errors": []}
-    sandbox_ready_marked = False
     first_text_marked = False
     deadline = time.monotonic() + timeout_s
     while time.monotonic() < deadline:
@@ -162,17 +161,12 @@ def consume(events: queue.Queue, recorder: HopRecorder, timeout_s: float) -> dic
         if etype == "session.sandbox_status":
             stage = payload.get("stage")
             summary["stages"].append(stage)
-            print(f"[{recorder.elapsed():>7.2f}s]       sandbox stage: {stage}")
             if stage == "failed":
                 summary["errors"].append(payload.get("error") or "sandbox launch failed")
                 recorder.record("Sandbox launched", False, str(payload.get("error")))
                 break
-            if stage == "ready" and not sandbox_ready_marked:
-                sandbox_ready_marked = recorder.record("Sandbox launched", True, "stage ready")
         elif etype == "response.output_text.delta":
             if not first_text_marked:
-                if not sandbox_ready_marked:
-                    sandbox_ready_marked = recorder.record("Sandbox launched", True, "inferred from model output")
                 first_text_marked = recorder.record("Model replied", True, "first text delta received")
             summary["reply"] += str(payload.get("delta") or "")
         elif etype in ("response.error", "turn.failed", "response.failed"):
@@ -181,6 +175,15 @@ def consume(events: queue.Queue, recorder: HopRecorder, timeout_s: float) -> dic
             summary["terminal"] = etype
             break
     return summary
+
+
+def show_diagnosis(client: OmnigentClient, session_id: str, result: dict[str, Any]) -> None:
+    """Print and record Omnigent's own view of a stuck or failed session."""
+    report = client.diagnose(session_id)
+    result["diagnosis"] = report
+    print("       Omnigent diagnosis (no secrets):")
+    for key, value in report.items():
+        print(f"         {key}: {value}")
 
 
 def run_direct(message: str, timeout_s: float, keep: bool, host_type: str = "managed") -> dict[str, Any]:
@@ -212,30 +215,41 @@ def run_direct(message: str, timeout_s: float, keep: bool, host_type: str = "man
         stop = threading.Event()
         worker = threading.Thread(
             target=watch_stream,
-            args=(client.stream_lines(session_id, max_seconds=timeout_s), events, stop),
+            args=(client.stream_lines(session_id, max_seconds=timeout_s + 480), events, stop),
             daemon=True,
         )
         worker.start()
-        time.sleep(1.0)  # let the stream subscribe before the first message
-        poster = start_poster(lambda: client.post_user_message(session_id, message))
-        print(f"[{recorder.elapsed():>7.2f}s]       message sent; watching sandbox launch and model reply")
+
+        if host_type == "managed":
+            print(f"[{recorder.elapsed():>7.2f}s]       waiting for Modal to start the sandbox (first time can take a few minutes)")
+            client.wait_until_ready(
+                session_id,
+                timeout_s=420,
+                on_stage=lambda st: print(f"[{recorder.elapsed():>7.2f}s]       sandbox stage: {st}"),
+            )
+            recorder.record("Sandbox launched", True, "ready")
+
+        client.post_user_message(session_id, message)
+        print(f"[{recorder.elapsed():>7.2f}s]       question sent; waiting for the model's reply")
 
         summary = consume(events, recorder, timeout_s)
         stop.set()
-        poster["thread"].join(timeout=5)
-        if poster.get("error"):
-            summary["errors"].append("message post: " + poster["error"])
         result["stream"] = summary
         ok_turn = summary["terminal"] in ("turn.completed", "response.completed") and bool(summary["reply"].strip())
         recorder.record("Turn completed", ok_turn, summary["terminal"] or "no terminal event before timeout")
         if summary["errors"]:
             print("       errors: " + " | ".join(summary["errors"])[:800])
+        if not ok_turn:
+            show_diagnosis(client, session_id, result)
 
         items = client.list_items(session_id)
         count = len(items.get("data") or items.get("items") or [])
         recorder.record("History persisted", count > 0, f"{count} items stored")
     except OmnigentAPIError as exc:
-        recorder.record("API call", False, str(exc))
+        name = "Sandbox launched" if "Sandbox" in str(exc) else "API call"
+        recorder.record(name, False, str(exc)[:300])
+        if session_id:
+            show_diagnosis(client, session_id, result)
     finally:
         if session_id and not keep:
             try:
@@ -309,7 +323,7 @@ def main() -> int:
     """Parse arguments, run the chosen mode, print and save the record."""
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--message", default=DEFAULT_MESSAGE, help="Message to send to the test agent.")
-    parser.add_argument("--timeout", type=float, default=240.0, help="Seconds to wait for the turn to finish.")
+    parser.add_argument("--timeout", type=float, default=180.0, help="Seconds to wait for the reply once the question is sent.")
     parser.add_argument("--keep", action="store_true", help="Keep the session (and sandbox) after the test.")
     parser.add_argument("--via-website", metavar="URL", help="Run through the deployed Vercel website instead.")
     parser.add_argument("--host-type", choices=["managed", "external"], default="managed",

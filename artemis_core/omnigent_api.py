@@ -42,9 +42,11 @@ import httpx
 _TOKEN_REFRESH_MARGIN_S = 60
 # Connect and per-request timeouts for ordinary JSON calls.
 _DEFAULT_TIMEOUT = httpx.Timeout(30.0, connect=10.0)
-# Posting the first message to a managed session blocks until the Modal
-# sandbox finishes launching, which Omnigent allows up to two minutes for.
-_MESSAGE_TIMEOUT = httpx.Timeout(240.0, connect=10.0)
+# Posting a message is quick once the session is ready (see wait_until_ready).
+# Modal's proxy ends any single request after 150 seconds, so stay below it.
+_MESSAGE_TIMEOUT = httpx.Timeout(140.0, connect=10.0)
+# How often and how long to poll a managed session while its sandbox launches.
+_READY_POLL_SECONDS = 3.0
 # SSE reads can sit idle between heartbeats; allow a generous read gap.
 _STREAM_TIMEOUT = httpx.Timeout(connect=10.0, read=120.0, write=30.0, pool=30.0)
 # Files and folders never shipped inside an agent bundle.
@@ -237,6 +239,13 @@ class OmnigentClient:
             if resp.status_code == 401 and attempt == 0:
                 self._tokens.clear()
                 continue
+            if 300 <= resp.status_code < 400:
+                raise OmnigentAPIError(
+                    f"{method} {path} was cut off by the hosting proxy (Modal ends requests "
+                    "that stay open longer than 150 seconds)",
+                    resp.status_code,
+                    resp.headers.get("location", ""),
+                )
             if resp.status_code >= 400:
                 raise OmnigentAPIError(f"{method} {path} failed", resp.status_code, resp.text)
             return resp
@@ -308,9 +317,9 @@ class OmnigentClient:
     def post_user_message(self, session_id: str, text: str) -> dict[str, Any]:
         """Send a user message to a session.
 
-        For a managed session that is still launching, Omnigent holds this
-        request open until the sandbox is ready, so it uses a long timeout.
-        Open the event stream first to watch the launch stages live.
+        Call :meth:`wait_until_ready` first for a managed session: while its
+        sandbox is still launching, Omnigent holds this request open, and
+        Modal's proxy would cut it off after 150 seconds.
 
         :param session_id: Target session id.
         :param text: The message text.
@@ -323,6 +332,73 @@ class OmnigentClient:
         return self._request(
             "POST", f"/v1/sessions/{session_id}/events", json=event, timeout=_MESSAGE_TIMEOUT
         ).json()
+
+    def wait_until_ready(
+        self,
+        session_id: str,
+        timeout_s: float = 420.0,
+        on_stage: Callable[[str], None] | None = None,
+    ) -> dict[str, Any]:
+        """Poll a session until its managed sandbox has fully launched.
+
+        Readiness means the session is bound to a host and Omnigent no longer
+        reports a sandbox launch in progress. Every poll is a short request,
+        so no single call approaches Modal's 150-second limit.
+
+        :param session_id: Session to watch.
+        :param timeout_s: Give up after this many seconds.
+        :param on_stage: Optional callback receiving each new launch stage.
+        :returns: The ready session snapshot.
+        :raises OmnigentAPIError: If the launch fails or times out.
+        """
+        deadline = time.monotonic() + timeout_s
+        last_stage = None
+        while True:
+            snap = self.get_session(session_id)
+            status = snap.get("sandbox_status") or None
+            stage = status.get("stage") if isinstance(status, dict) else None
+            if stage and stage != last_stage:
+                last_stage = stage
+                if on_stage:
+                    on_stage(stage)
+            if stage == "failed":
+                raise OmnigentAPIError("Sandbox launch failed", 0, str(status.get("error")))
+            if stage in (None, "ready") and snap.get("host_id"):
+                return snap
+            if time.monotonic() > deadline:
+                raise OmnigentAPIError(
+                    f"Sandbox not ready after {int(timeout_s)} seconds", 0, f"last stage: {last_stage}"
+                )
+            time.sleep(_READY_POLL_SECONDS)
+
+    def diagnose(self, session_id: str) -> dict[str, Any]:
+        """Collect Omnigent's own view of a session and its host for troubleshooting.
+
+        Contains no secrets: status fields, error messages, and harness readiness.
+
+        :param session_id: Session to inspect.
+        :returns: A small dictionary of diagnostic fields.
+        """
+        report: dict[str, Any] = {}
+        try:
+            snap = self.get_session(session_id)
+        except OmnigentAPIError as exc:
+            return {"session_lookup_error": str(exc)[:300]}
+        for key in (
+            "status", "sandbox_status", "host_id", "host_online", "runner_id", "runner_online",
+            "harness", "llm_model", "inference_configured", "inference_error", "last_task_error",
+        ):
+            report[key] = snap.get(key)
+        host_id = snap.get("host_id")
+        if host_id:
+            try:
+                host = self._request("GET", f"/v1/hosts/{host_id}").json()
+                report["host_status"] = host.get("status")
+                harnesses = host.get("configured_harnesses") or {}
+                report["host_claude_sdk"] = harnesses.get("claude-sdk")
+            except OmnigentAPIError as exc:
+                report["host_lookup_error"] = str(exc)[:200]
+        return report
 
     def list_items(self, session_id: str) -> dict[str, Any]:
         """Return persisted conversation items for history reconciliation."""

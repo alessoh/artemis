@@ -14,10 +14,9 @@ between the browser and the Omnigent server on Modal:
     ``{"session_id", "stream_token"}`` straight away.
 
 ``POST /api/sessions/{id}/message?t=<stream_token>``
-    Body ``{"message": str}``. Sends the user's message. For a new managed
-    session Omnigent holds this request open until the Modal sandbox has
-    launched (up to about two minutes), so the browser opens the stream
-    first and watches the launch stages while this call waits.
+    Body ``{"message": str}``. Waits (with short polls) until the managed
+    Modal sandbox has launched, then sends the user's message. The browser
+    opens the stream first and watches the launch stages while this waits.
 
 ``GET  /api/sessions/{id}/stream?t=<stream_token>``
     Relays the session's Server-Sent Events verbatim. Each connection ends
@@ -164,7 +163,12 @@ def send_message(session_id: str, body: MessageRequest, t: str = Query(default="
     """Send a user message; may wait while a managed sandbox launches."""
     require_session_access(session_id, t)
     try:
-        ack = get_client().post_user_message(session_id, body.message.strip())
+        client = get_client()
+        if HOST_TYPE == "managed":
+            # Short polls while Modal starts the sandbox; posting earlier would
+            # hold one request open past Modal's 150-second proxy limit.
+            client.wait_until_ready(session_id, timeout_s=RELAY_MAX_SECONDS - 60)
+        ack = client.post_user_message(session_id, body.message.strip())
     except (OmnigentConfigError, OmnigentAPIError) as exc:
         raise upstream_error(exc) from exc
     return JSONResponse({"session_id": session_id, "ack": ack})
