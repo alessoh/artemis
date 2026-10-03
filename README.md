@@ -35,7 +35,7 @@ From the repository root on your own computer:
 ```bash
 pip install -r requirements-lab.txt
 modal setup                                   # one-time Modal login
-python scripts/make_secrets.py init           # generates 11 values, asks you for 4
+python scripts/make_secrets.py init           # copy 2 values in the browser, press Enter
 python scripts/make_secrets.py check
 python scripts/make_secrets.py modal          # saves two Modal secrets
 modal deploy lab/modal_server.py              # deploys the Omnigent server
@@ -51,8 +51,11 @@ five stations all turn green.
 
 `.env.example` only lists the variable names. Your real `.env` is created by
 `python scripts/make_secrets.py init`, which generates eleven of the fifteen
-values itself and asks you for the other four: a Neon database connection
-string (from pg.new), your Modal token ID and secret, and your Anthropic key.
+values itself, reads your Modal token from the file `modal setup` saved, and
+collects the last two from your clipboard: the Neon database address (Vercel,
+Storage, your database, DATABASE_URL_UNPOOLED) and your Anthropic key. Copy
+each one in the browser and press Enter in the terminal; nothing secret is
+shown on screen.
 You never need to obtain anything from Omnigent; the script creates the
 Omnigent secrets and Omnigent reads them from Modal when it starts.
 
