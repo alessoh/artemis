@@ -267,6 +267,11 @@ def extract_value(key: str, copied: str) -> str:
     return ""
 
 
+def describe_key(value: str) -> str:
+    """Show the start and last four characters of a key, as consoles do."""
+    return f"{value[:10]}...{value[-4:]}" if len(value) > 18 else mask("OMNIGENT_ANTHROPIC_API_KEY", value)
+
+
 def mask(key: str, value: str) -> str:
     """Describe a secret without revealing it, e.g. for a confirmation line."""
     if key == "DATABASE_URL":
@@ -393,10 +398,21 @@ def ask_value(key: str) -> str:
         print(f"  What I received has {len(source.strip())} characters. Copy it again, then press Enter.")
 
 
-def cmd_init(_: argparse.Namespace) -> int:
+REENTER_GROUPS = {
+    "database": ["DATABASE_URL"],
+    "anthropic": ["OMNIGENT_ANTHROPIC_API_KEY"],
+    "modal": ["MODAL_TOKEN_ID", "MODAL_TOKEN_SECRET"],
+}
+
+
+def cmd_init(args: argparse.Namespace) -> int:
     """Create or complete .env, generating secrets and collecting the rest."""
     current = read_env()
     values = {key: current.get(key, "") for key in ALL_KEYS}
+    reenter = set(getattr(args, "reenter", None) or [])
+    for group in reenter:
+        for key in REENTER_GROUPS[group]:
+            values[key] = ""
 
     def keep_or(key: str, generated: str) -> None:
         if not is_filled(values.get(key)):
@@ -425,7 +441,7 @@ def cmd_init(_: argparse.Namespace) -> int:
     # Modal token: reuse the one `modal setup` saved on this computer.
     if not (looks_valid("MODAL_TOKEN_ID", values["MODAL_TOKEN_ID"])
             and looks_valid("MODAL_TOKEN_SECRET", values["MODAL_TOKEN_SECRET"])):
-        found = modal_token_from_environment() or modal_token_from_cli_config()
+        found = None if "modal" in reenter else (modal_token_from_environment() or modal_token_from_cli_config())
         if found:
             values["MODAL_TOKEN_ID"], values["MODAL_TOKEN_SECRET"] = found
             save_env(values)
@@ -433,13 +449,15 @@ def cmd_init(_: argparse.Namespace) -> int:
     else:
         print("Modal token: already saved.")
 
-    # Anthropic key: reuse one already set in this terminal's environment.
-    if not looks_valid("OMNIGENT_ANTHROPIC_API_KEY", values["OMNIGENT_ANTHROPIC_API_KEY"]):
+    # Anthropic key: reuse one already set in this terminal's environment,
+    # unless the user asked to enter it fresh.
+    if "anthropic" not in reenter and not looks_valid("OMNIGENT_ANTHROPIC_API_KEY", values["OMNIGENT_ANTHROPIC_API_KEY"]):
         env_key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
         if looks_valid("OMNIGENT_ANTHROPIC_API_KEY", env_key):
             values["OMNIGENT_ANTHROPIC_API_KEY"] = env_key
             save_env(values)
-            print("Anthropic key: found ANTHROPIC_API_KEY in this terminal's environment.")
+            print(f"Anthropic key: used ANTHROPIC_API_KEY already set on this computer ({describe_key(env_key)}).")
+            print("  If that is not the key you want, run:  python scripts/make_secrets.py init --reenter anthropic")
 
     missing = [key for key in USER_KEYS if values[key] == PLACEHOLDER]
     if missing and sys.stdin.isatty():
@@ -514,7 +532,7 @@ def cmd_check(_: argparse.Namespace) -> int:
     print(".env looks complete and consistent.")
     print(f"  Database: {mask('DATABASE_URL', values['DATABASE_URL'])}")
     print(f"  Modal token: {mask('MODAL_TOKEN_ID', values['MODAL_TOKEN_ID'])}")
-    print(f"  Anthropic key: {mask('OMNIGENT_ANTHROPIC_API_KEY', values['OMNIGENT_ANTHROPIC_API_KEY'])}")
+    print(f"  Anthropic key: {describe_key(values['OMNIGENT_ANTHROPIC_API_KEY'])}")
     print("Next: python scripts/make_secrets.py modal")
     return 0
 
@@ -570,7 +588,11 @@ def main() -> int:
     """Parse arguments and dispatch to a subcommand."""
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = parser.add_subparsers(dest="command", required=True)
-    for name, func in (("init", cmd_init), ("check", cmd_check), ("modal", cmd_modal), ("vercel", cmd_vercel)):
+    init = sub.add_parser("init", help="create .env and collect your values")
+    init.add_argument("--reenter", nargs="+", choices=sorted(REENTER_GROUPS),
+                      help="discard saved values and enter them again, e.g. --reenter anthropic database")
+    init.set_defaults(func=cmd_init)
+    for name, func in (("check", cmd_check), ("modal", cmd_modal), ("vercel", cmd_vercel)):
         sub.add_parser(name).set_defaults(func=func)
     args = parser.parse_args()
     return args.func(args)
