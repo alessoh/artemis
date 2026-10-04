@@ -507,9 +507,46 @@ class OmnigentClient:
                 report["host_lookup_error"] = str(exc)[:200]
         return report
 
-    def list_items(self, session_id: str) -> dict[str, Any]:
-        """Return persisted conversation items for history reconciliation."""
-        return self._request("GET", f"/v1/sessions/{session_id}/items").json()
+    def list_items(self, session_id: str, after: str | None = None, limit: int = 100) -> dict[str, Any]:
+        """Return one page of persisted conversation items, oldest first.
+
+        :param session_id: Session to read.
+        :param after: Cursor: return items after this item id.
+        :param limit: Page size (Omnigent allows 1 to 1000).
+        :returns: ``{"data": [...], "first_id", "last_id", "has_more"}``.
+        """
+        params: dict[str, Any] = {"limit": limit, "order": "asc"}
+        if after:
+            params["after"] = after
+        return self._request("GET", f"/v1/sessions/{session_id}/items", params=params).json()
+
+    def list_all_items(self, session_id: str) -> list[dict[str, Any]]:
+        """Return every persisted item of a session, following pagination."""
+        items: list[dict[str, Any]] = []
+        after: str | None = None
+        while True:
+            page = self.list_items(session_id, after=after, limit=1000)
+            data = page.get("data") or []
+            items.extend(data)
+            if not page.get("has_more") or not data:
+                return items
+            after = page.get("last_id") or data[-1].get("id")
+
+    def list_child_sessions(self, session_id: str) -> list[dict[str, Any]]:
+        """Return summaries of every sub-agent session spawned by a session."""
+        children: list[dict[str, Any]] = []
+        after: str | None = None
+        while True:
+            params: dict[str, Any] = {"limit": 1000, "order": "asc"}
+            if after:
+                params["after"] = after
+            page = self._request("GET", f"/v1/sessions/{session_id}/child_sessions",
+                                 params=params).json()
+            data = page.get("data") or []
+            children.extend(data)
+            if not page.get("has_more") or not data:
+                return children
+            after = page.get("last_id") or data[-1].get("id")
 
     def delete_session(self, session_id: str) -> None:
         """Delete a session; for managed hosts this terminates the sandbox."""

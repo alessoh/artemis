@@ -246,16 +246,43 @@ def item_text(item: Any) -> str:
 
 
 def collect(client: OmnigentClient, session_id: str, out_dir: Path) -> Path | None:
-    """Save the session's items and its last assistant message (the report)."""
+    """Save every item of the session and of each sub-agent, plus the final report.
+
+    The report is the lead's last assistant message (the run's kickoff asks
+    for the full report there).
+    """
     out_dir.mkdir(parents=True, exist_ok=True)
-    items = client.list_items(session_id)
-    (out_dir / "items.json").write_text(json.dumps(items, indent=2), encoding="utf-8")
-    rows = items.get("data") or items.get("items") or []
-    texts = [t for t in (item_text(i) for i in rows) if t.strip()]
+    items = client.list_all_items(session_id)
+    (out_dir / "items.json").write_text(json.dumps({"data": items}, indent=2), encoding="utf-8")
+    print(f"Saved {len(items)} items of the lead session.")
+    try:
+        children = client.list_child_sessions(session_id)
+    except OmnigentAPIError as exc:
+        print(f"Could not list the sub-agent sessions: {exc}")
+        children = []
+    if children:
+        child_dir = out_dir / "subagents"
+        child_dir.mkdir(exist_ok=True)
+        (child_dir / "index.json").write_text(json.dumps(children, indent=2), encoding="utf-8")
+        for child in children:
+            child_id = str(child.get("id"))
+            label = str(child.get("title") or child_id).replace(":", "_").replace("/", "_")
+            try:
+                child_items = client.list_all_items(child_id)
+            except OmnigentAPIError as exc:
+                print(f"  could not read {label}: {exc}")
+                continue
+            (child_dir / f"{label}_{child_id[:8]}.json").write_text(
+                json.dumps({"data": child_items}, indent=2), encoding="utf-8")
+        print(f"Saved the records of {len(children)} sub-agent sessions in {child_dir.name}/.")
+    texts = [t for t in (item_text(i) for i in items) if t.strip()]
     if not texts:
         print("No assistant messages stored yet.")
         return None
-    final = texts[-1]
+    with_marker = [t for t in texts if COMPLETE_MARKER in t]
+    final = with_marker[-1] if with_marker else texts[-1]
+    if not with_marker:
+        print("The lead has not posted its final report yet; saving its latest message.")
     report = out_dir / "report.md"
     report.write_text(final.replace(COMPLETE_MARKER, "").rstrip() + "\n", encoding="utf-8")
     return report
