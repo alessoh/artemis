@@ -23,7 +23,8 @@ Individual steps, if you need them:
     python scripts/run_phase2.py launch
     python scripts/run_phase2.py watch SESSION_ID     # reconnect to a running lab
     python scripts/run_phase2.py collect SESSION_ID   # save the report of a finished run
-    python scripts/run_phase2.py stop SESSION_ID      # end a run and its sandbox
+    python scripts/run_phase2.py stop SESSION_ID      # save everything, then end the run
+    python scripts/run_phase2.py rebuild SESSION_ID   # rebuild the report from the local event log
 
 Nothing secret is printed. Records are saved under runs/.
 """
@@ -77,7 +78,10 @@ until the experiment budget is used up or progress stalls, the single final
 held-out test, the shortlist of never-assessed materials with Materials Project
 and literature cross-checks, and the report by the Scribe. Do not ask me whether
 to continue. When everything is done, make your last message the full report,
-then the final ledger summary, then a last line that reads exactly:
+then the final ledger summary, then the complete source code of
+lab/solar/experiment.py in a python code block, then the shortlist CSV in a
+code block (the sandbox cannot push to GitHub, so this message is the only copy
+that leaves it), then a last line that reads exactly:
 {COMPLETE_MARKER}
 """
 
@@ -430,13 +434,66 @@ def cmd_collect(args: argparse.Namespace) -> int:
     return 0
 
 
+def rebuild_from_events(out_dir: Path) -> Path | None:
+    """Rebuild transcript.md and report.md from the locally saved events.jsonl.
+
+    The watcher records every streamed event, so the lead's messages survive
+    even after Omnigent deletes the session. Text is grouped by turn.
+    """
+    log = out_dir / "events.jsonl"
+    if not log.exists():
+        print(f"No events.jsonl in {out_dir.relative_to(REPO_ROOT)}; nothing to rebuild from.")
+        return None
+    turns: list[str] = []
+    current = ""
+    with open(log, encoding="utf-8") as handle:
+        for line in handle:
+            try:
+                event = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            etype = event.get("type")
+            if etype == "response.output_text.delta":
+                current += str(event.get("delta") or "")
+            elif etype in ("turn.completed", "response.completed", "turn.failed", "response.failed"):
+                if current.strip():
+                    turns.append(current)
+                current = ""
+    if current.strip():
+        turns.append(current)
+    if not turns:
+        print("events.jsonl holds no message text.")
+        return None
+    transcript = out_dir / "transcript.md"
+    transcript.write_text("\n\n---\n\n".join(t.strip() for t in turns) + "\n", encoding="utf-8")
+    finals = [t for t in turns if COMPLETE_MARKER in t]
+    report = out_dir / "report.md"
+    report.write_text((finals[-1] if finals else turns[-1]).replace(COMPLETE_MARKER, "").strip() + "\n",
+                      encoding="utf-8")
+    print(f"Rebuilt {len(turns)} messages into {transcript.relative_to(REPO_ROOT)}")
+    print(f"Saved {'the final report' if finals else 'the latest message'} to {report.relative_to(REPO_ROOT)}")
+    return report
+
+
+def cmd_rebuild(args: argparse.Namespace) -> int:
+    """Rebuild the report from the local event log (works after a session is deleted)."""
+    matches = sorted(RUNS.glob(f"phase2_*_{args.session_id}"))
+    if not matches:
+        return stop(f"No runs folder for session {args.session_id} on this computer.")
+    return 0 if rebuild_from_events(matches[-1]) else 1
+
+
 def cmd_stop(args: argparse.Namespace) -> int:
     client = make_client()
     out_dir = find_out_dir(args.session_id)
     try:
-        collect(client, args.session_id, out_dir)
-    except OmnigentAPIError:
-        pass
+        report = collect(client, args.session_id, out_dir)
+    except OmnigentAPIError as exc:
+        report = None
+        print(f"Could not save the session's records: {exc}")
+    if report is None and not getattr(args, "force", False):
+        return stop("The records were not saved, so the session was left running. "
+                    "Fix the problem first, or add --force to end it anyway.")
     client.delete_session(args.session_id)
     client.close()
     print(f"Session {args.session_id} ended and its sandbox stopped. Records are in "
@@ -465,9 +522,12 @@ def main() -> int:
     for name, func in (("data", cmd_data), ("check", cmd_check), ("share", cmd_share),
                        ("launch", cmd_launch)):
         sub.add_parser(name).set_defaults(func=func)
-    for name, func in (("watch", cmd_watch), ("collect", cmd_collect), ("stop", cmd_stop)):
+    for name, func in (("watch", cmd_watch), ("collect", cmd_collect), ("stop", cmd_stop),
+                       ("rebuild", cmd_rebuild)):
         p = sub.add_parser(name)
         p.add_argument("session_id")
+        if name == "stop":
+            p.add_argument("--force", action="store_true", help="end the session even if saving failed")
         p.set_defaults(func=func)
     args = parser.parse_args()
     func = getattr(args, "func", cmd_auto)
