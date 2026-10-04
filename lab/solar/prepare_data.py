@@ -270,12 +270,16 @@ def build_snapshot() -> tuple[bytes, dict]:
     structure: dict[str, dict[str, object]] = {}
     unlabeled: list[dict[str, object]] = []
     labeled_outside_benchmark = 0
+    seen_unlabeled: set[str] = set()
+    duplicate_unlabeled = 0
     for entry in records:
         jid = str(entry.get("jid", ""))
         if not jid:
             continue
         if jid in wanted:
             structure[jid] = structure_fields(entry)
+        elif jid in seen_unlabeled:
+            duplicate_unlabeled += 1
         elif as_float(entry.get("slme")) is not None:
             labeled_outside_benchmark += 1
         else:
@@ -285,6 +289,7 @@ def build_snapshot() -> tuple[bytes, dict]:
             info = structure_fields(entry)
             if not info["elements"]:
                 continue
+            seen_unlabeled.add(jid)
             unlabeled.append({
                 "jid": jid, "split": "unlabeled",
                 **{k: info[k] for k in STRUCTURE_COLUMNS},
@@ -355,6 +360,7 @@ def build_snapshot() -> tuple[bytes, dict]:
             "slme_differs_from_release_by_more_than_0.01": slme_mismatch,
             "unlabeled_materials": len(unlabeled),
             "slme_known_but_outside_benchmark_left_out": labeled_outside_benchmark,
+            "repeated_unlabeled_records_dropped": duplicate_unlabeled,
             "labeled_missing_optb88vdw_bandgap": sum(r["optb88vdw_bandgap"] is None for r in labeled),
             "labeled_missing_ehull": sum(r["ehull"] is None for r in labeled),
             "labeled_missing_formation_energy": sum(r["formation_energy_peratom"] is None for r in labeled),

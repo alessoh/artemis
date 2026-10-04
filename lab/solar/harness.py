@@ -599,6 +599,9 @@ def unlabeled_task() -> tuple[pd.DataFrame, pd.DataFrame]:
     abundance = load_abundance()
     train = frame[frame["split"].isin(["train", "val"])].drop(columns=["split"])
     pool = frame[(frame["split"] == "unlabeled") & pool_mask(frame, abundance)]
+    # The 2021 release lists four materials more than once with identical
+    # values (found by the first lab run); keep one row per jid.
+    pool = pool.drop_duplicates(subset="jid", keep="first")
     pool = pool.sample(frac=1.0, random_state=SEED).reset_index(drop=True)
     return train.reset_index(drop=True), pool[VISIBLE_COLUMNS].copy()
 
