@@ -48,6 +48,7 @@ import httpx
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import make_secrets as ms  # noqa: E402
+from artemis_core import runs as lab_runs  # noqa: E402
 from artemis_core.omnigent_api import (  # noqa: E402
     OmnigentAPIError,
     OmnigentClient,
@@ -65,25 +66,9 @@ AGENT_DIR = REPO_ROOT / "lab" / "agents" / "solar_lab"
 RUNS = REPO_ROOT / "runs"
 DEFAULT_REPO = "https://github.com/alessoh/artemis"
 BRANCH = "main"
-COMPLETE_MARKER = "ARTEMIS-RUN-COMPLETE"
+COMPLETE_MARKER = lab_runs.COMPLETE_MARKER
+KICKOFF = lab_runs.SOLAR_KICKOFF
 STREAM_SLICE_SECONDS = 600
-KICKOFF = f"""Run the Artemis solar program from start to finish.
-
-Question: among earth-abundant, non-toxic inorganic crystals in NIST JARVIS-DFT,
-which ones should a lab compute next to find excellent solar absorbers fastest,
-and what does the best search strategy teach us about what makes a good absorber?
-
-Follow lab/solar/program.md exactly: setup, the experiment loop with your team
-until the experiment budget is used up or progress stalls, the single final
-held-out test, the shortlist of never-assessed materials with Materials Project
-and literature cross-checks, and the report by the Scribe. Do not ask me whether
-to continue. When everything is done, make your last message the full report,
-then the final ledger summary, then the complete source code of
-lab/solar/experiment.py in a python code block, then the shortlist CSV in a
-code block (the sandbox cannot push to GitHub, so this message is the only copy
-that leaves it), then a last line that reads exactly:
-{COMPLETE_MARKER}
-"""
 
 
 def say(step: str, text: str) -> None:
@@ -231,22 +216,7 @@ def make_client() -> OmnigentClient:
     return OmnigentClient(settings)
 
 
-def item_text(item: Any) -> str:
-    """Best-effort extraction of assistant text from a stored session item."""
-    if not isinstance(item, dict):
-        return ""
-    data = item.get("data") if isinstance(item.get("data"), dict) else item
-    role = data.get("role") or item.get("role")
-    if role not in (None, "assistant"):
-        return ""
-    parts = data.get("content")
-    if isinstance(parts, str):
-        return parts
-    texts = []
-    for part in parts or []:
-        if isinstance(part, dict) and part.get("type") in ("output_text", "text"):
-            texts.append(str(part.get("text") or ""))
-    return "".join(texts)
+item_text = lab_runs.item_text
 
 
 def collect(client: OmnigentClient, session_id: str, out_dir: Path) -> Path | None:

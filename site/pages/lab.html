@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head">
+  <div class="wrap">
+    <h1>Start an investigation</h1>
+    <p class="lede">Start a run and watch the agents work in real time. Every finished run is saved and published on the Results page.</p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:24px">
+  <div class="wrap lab-grid">
+    <form class="surface panel" id="run-form" novalidate>
+      <fieldset>
+        <legend>What should the lab do?</legend>
+        <div class="choice">
+          <label>
+            <input type="radio" name="kind" value="proposal" checked>
+            <span><strong>Draft an experiment for my question</strong>
+            <span>The Compiler turns your question into a testable plan: what to measure, which public data to use, baselines, risks, and whether Artemis can run it today. About 3 to 8 minutes.</span></span>
+          </label>
+          <label>
+            <input type="radio" name="kind" value="solar">
+            <span><strong>Run the solar-absorber program again</strong>
+            <span>All six agents repeat the flagship investigation from scratch, ending with a held-out test and a full report. One to three hours.</span></span>
+          </label>
+        </div>
+      </fieldset>
+
+      <div class="field" id="question-field">
+        <label for="question">Your question</label>
+        <textarea id="question" name="question" maxlength="2000" placeholder="For example: Which metal-organic frameworks in public databases could capture carbon dioxide from air most efficiently?"></textarea>
+        <p class="hint">Plain language is fine. Questions about weapons, toxins or tracking people are declined.</p>
+      </div>
+
+      <div class="field">
+        <label for="access-code">Access code</label>
+        <input type="password" id="access-code" name="access_code" autocomplete="off" spellcheck="false">
+        <p class="hint">Runs use paid computing, so starting one needs a code from the Artemis team. Reading results is open to everyone.</p>
+      </div>
+
+      <button class="button button-primary" type="submit" id="start-button">Start run</button>
+      <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+    </form>
+
+    <section class="surface panel live-panel" aria-labelledby="live-title">
+      <h2 id="live-title" style="font-size:1.35rem">Live run</h2>
+      <ol class="run-stages" id="stages" aria-label="Run progress">
+        <li data-stage="sandbox" data-state="idle">Sandbox</li>
+        <li data-stage="working" data-state="idle">Agents</li>
+        <li data-stage="saving" data-state="idle">Saving</li>
+        <li data-stage="done" data-state="idle">Published</li>
+      </ol>
+      <p class="small" id="run-meta">No run yet. Start one, or open a run in progress from the <a href="/results">Results</a> page.</p>
+      <div class="feed" id="feed" aria-live="polite">
+        <p class="empty-state">The lead agent's messages will appear here as it writes them.</p>
+      </div>
+      <div class="actions" id="run-actions" hidden>
+        <a class="button button-primary" id="result-link" href="/results" hidden>Read the saved report</a>
+        <button class="button button-danger" type="button" id="stop-button">Stop run</button>
+      </div>
+    </section>
+  </div>
+</section>
+{% endblock %}

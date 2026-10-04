@@ -1,303 +1,203 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-version="d97183e016">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Artemis lab connection check</title>
-<meta name="description" content="Phase 1 of Artemis: confirm the website, Omnigent server, Modal sandbox, Claude model and live stream are connected.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --paper: #EEF2F5;
-    --grid: #DCE3EA;
-    --panel: #FFFFFF;
-    --ink: #14213D;
-    --muted: #5B6577;
-    --line: #C9D2DC;
-    --ok: #0F766E;
-    --wait: #B45309;
-    --fail: #9F1239;
-    --focus: #1F3A5F;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --paper: #101826; --grid: #18233A; --panel: #142033; --ink: #E7ECF3;
-      --muted: #9AA6B8; --line: #2A3A55; --ok: #34B3A6; --wait: #E3A04F; --fail: #F06C8C; --focus: #9EC1EA;
-    }
-  }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; }
-  body {
-    font-family: "Instrument Sans", system-ui, sans-serif;
-    color: var(--ink);
-    background-color: var(--paper);
-    background-image:
-      linear-gradient(var(--grid) 1px, transparent 1px),
-      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-    background-size: 28px 28px;
-    min-height: 100vh;
-    line-height: 1.5;
-  }
-  .wrap { max-width: 1080px; margin: 0 auto; padding: 40px 20px 64px; }
-  header { margin-bottom: 32px; max-width: 64ch; }
-  h1 { font-size: 2rem; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 8px; }
-  header p { color: var(--muted); margin: 0; font-size: 1.02rem; }
+<title>Artemis: an autonomous AI lab for materials discovery</title>
+<meta name="description" content="Open-source AI lab: agents turn a science question into a measured experiment. First run: solar absorbers found in 8 calculations; the textbook rule needed 20.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://artemis-ten-blond.vercel.app/">
+<meta name="theme-color" content="#f4f6f9">
+<meta name="color-scheme" content="light">
+<meta name="author" content="Artemis lab">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Artemis">
+<meta property="og:title" content="Artemis: an autonomous AI lab for materials discovery">
+<meta property="og:description" content="Open-source AI lab: agents turn a science question into a measured experiment. First run: solar absorbers found in 8 calculations; the textbook rule needed 20.">
+<meta property="og:url" content="https://artemis-ten-blond.vercel.app/">
+<meta property="og:image" content="https://artemis-ten-blond.vercel.app/og/artemis.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Artemis, an autonomous AI lab for materials discovery">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Artemis: an autonomous AI lab for materials discovery">
+<meta name="twitter:description" content="Open-source AI lab: agents turn a science question into a measured experiment. First run: solar absorbers found in 8 calculations; the textbook rule needed 20.">
+<meta name="twitter:image" content="https://artemis-ten-blond.vercel.app/og/artemis.png">
+<meta name="twitter:image:alt" content="Artemis, an autonomous AI lab for materials discovery">
 
-  .layout { display: grid; grid-template-columns: 300px 1fr; gap: 28px; align-items: start; }
-  @media (max-width: 820px) { .layout { grid-template-columns: 1fr; } }
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="alternate" type="text/plain" title="LLM-readable summary" href="/llms.txt">
+<link rel="preload" href="/assets/fonts/schibsted-grotesk-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/site.css?v=d97183e016">
+<script type="application/ld+json">{"@context": "https://schema.org", "@id": "https://artemis-ten-blond.vercel.app/#org", "@type": "Organization", "description": "An autonomous AI lab for scientific discovery that publishes everything it does.", "founder": {"@type": "Person", "name": "Peter Alesso"}, "logo": "https://artemis-ten-blond.vercel.app/icon-512.png", "name": "Artemis", "sameAs": ["https://github.com/alessoh/artemis"], "url": "https://artemis-ten-blond.vercel.app/"}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@id": "https://artemis-ten-blond.vercel.app/#site", "@type": "WebSite", "description": "An autonomous AI lab that turns scientific questions into measured experiments.", "inLanguage": "en", "name": "Artemis", "publisher": {"@id": "https://artemis-ten-blond.vercel.app/#org", "@type": "Organization", "name": "Artemis", "url": "https://artemis-ten-blond.vercel.app/"}, "url": "https://artemis-ten-blond.vercel.app/"}</script>
 
-  /* The signal path: the one memorable element on the page. */
-  .path { position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 20px; }
-  .path h2 { font-size: 0.95rem; font-weight: 600; margin: 0 0 16px; color: var(--muted); }
-  .stations { list-style: none; margin: 0; padding: 0; position: relative; }
-  .stations::before {
-    content: ""; position: absolute; left: 11px; top: 14px; bottom: 14px; width: 2px; background: var(--line);
-  }
-  .station { position: relative; display: grid; grid-template-columns: 24px 1fr auto; gap: 12px; padding: 10px 0; }
-  .dot {
-    width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--line); background: var(--panel);
-    position: relative; z-index: 1; transition: background-color .25s, border-color .25s;
-  }
-  .station[data-state="wait"] .dot { border-color: var(--wait); background: color-mix(in srgb, var(--wait) 22%, var(--panel)); }
-  .station[data-state="ok"] .dot { border-color: var(--ok); background: var(--ok); }
-  .station[data-state="fail"] .dot { border-color: var(--fail); background: var(--fail); }
-  .station-name { font-weight: 600; font-size: 0.98rem; }
-  .station-note { color: var(--muted); font-size: 0.86rem; display: block; }
-  .station-time { color: var(--muted); font-size: 0.82rem; font-variant-numeric: tabular-nums; padding-top: 2px; }
-  @media (prefers-reduced-motion: reduce) { .dot { transition: none; } }
-
-  .bench { display: grid; gap: 20px; }
-  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px; }
-  .card h2 { font-size: 1.05rem; font-weight: 600; margin: 0 0 4px; }
-  .card .hint { color: var(--muted); font-size: 0.9rem; margin: 0 0 14px; }
-
-  label { display: block; font-size: 0.9rem; font-weight: 500; margin: 12px 0 6px; }
-  textarea, input {
-    width: 100%; font: inherit; color: var(--ink); background: var(--paper);
-    border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
-  }
-  textarea { min-height: 84px; resize: vertical; }
-  textarea:focus-visible, input:focus-visible, button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
-  .row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
-  button {
-    font: inherit; font-weight: 600; border-radius: 10px; padding: 10px 18px; cursor: pointer;
-    border: 1px solid var(--ink); background: var(--ink); color: var(--panel);
-  }
-  button.secondary { background: transparent; color: var(--ink); }
-  button[disabled] { opacity: .5; cursor: not-allowed; }
-
-  .reply {
-    font-family: "Newsreader", Georgia, serif; font-size: 1.2rem; line-height: 1.6;
-    white-space: pre-wrap; min-height: 3.2em; max-width: 68ch;
-  }
-  .empty { color: var(--muted); font-style: italic; }
-
-  .log { list-style: none; margin: 0; padding: 0; max-height: 300px; overflow: auto; font-size: 0.86rem; }
-  .log li { display: grid; grid-template-columns: 64px 1fr; gap: 10px; padding: 6px 0; border-top: 1px solid var(--line); }
-  .log li:first-child { border-top: 0; }
-  .log time { color: var(--muted); font-variant-numeric: tabular-nums; }
-  .log .bad { color: var(--fail); }
-  .status-line { font-size: 0.9rem; color: var(--muted); margin-top: 12px; min-height: 1.4em; }
-  .status-line.bad { color: var(--fail); }
-</style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <h1>Artemis lab connection check</h1>
-    <p>Send one question through the whole lab. Each station on the path lights up only when a real event from that part of the system arrives.</p>
-  </header>
-
-  <div class="layout">
-    <aside class="path" aria-labelledby="path-title">
-      <h2 id="path-title">Signal path</h2>
-      <ol class="stations">
-        <li class="station" id="hop-website" data-state="idle"><span class="dot" aria-hidden="true"></span>
-          <span><span class="station-name">Website</span><span class="station-note">Vercel relay</span></span><span class="station-time"></span></li>
-        <li class="station" id="hop-server" data-state="idle"><span class="dot" aria-hidden="true"></span>
-          <span><span class="station-name">Omnigent server</span><span class="station-note">Modal, switchboard</span></span><span class="station-time"></span></li>
-        <li class="station" id="hop-sandbox" data-state="idle"><span class="dot" aria-hidden="true"></span>
-          <span><span class="station-name">Agent sandbox</span><span class="station-note">Modal, lab bench</span></span><span class="station-time"></span></li>
-        <li class="station" id="hop-model" data-state="idle"><span class="dot" aria-hidden="true"></span>
-          <span><span class="station-name">Claude model</span><span class="station-note">Anthropic API</span></span><span class="station-time"></span></li>
-        <li class="station" id="hop-stream" data-state="idle"><span class="dot" aria-hidden="true"></span>
-          <span><span class="station-name">Live stream</span><span class="station-note">events back to you</span></span><span class="station-time"></span></li>
-      </ol>
-    </aside>
-
-    <main class="bench">
-      <section class="card" aria-labelledby="ask-title">
-        <h2 id="ask-title">Ask the test agent</h2>
-        <p class="hint">The agent restates your question and names one public database that could help. It has no tools and invents no data.</p>
-        <form id="ask-form">
-          <label for="message">Question</label>
-          <textarea id="message" required maxlength="4000">Which earth-abundant materials could make efficient solar cells?</textarea>
-          <label for="code">Access code</label>
-          <input id="code" type="password" autocomplete="off" required>
-          <div class="row">
-            <button type="submit" id="run">Run the check</button>
-            <button type="button" class="secondary" id="end" disabled>End session</button>
-          </div>
-          <p class="status-line" id="status" role="status" aria-live="polite"></p>
-        </form>
-      </section>
-
-      <section class="card" aria-labelledby="reply-title">
-        <h2 id="reply-title">Agent reply</h2>
-        <div class="reply empty" id="reply">No reply yet. Run the check to start a session.</div>
-      </section>
-
-      <section class="card" aria-labelledby="log-title">
-        <h2 id="log-title">Event log</h2>
-        <p class="hint">Raw events relayed from Omnigent, with seconds since you pressed Run.</p>
-        <ul class="log" id="log"><li><time></time><span class="empty">Nothing has happened yet.</span></li></ul>
-      </section>
-    </main>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap header-row">
+    <a class="brand" href="/" aria-label="Artemis home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="#14203b" stroke-width="1.6"><path d="M8 8h16v16H8z"/><path d="M8 8l8 8 8-8M8 24l8-8 8 8"/></g><circle cx="8" cy="8" r="3.4" fill="#2343c8"/><circle cx="24" cy="8" r="3.4" fill="#c27c00"/><circle cx="8" cy="24" r="3.4" fill="#c27c00"/><circle cx="24" cy="24" r="3.4" fill="#2343c8"/><circle cx="16" cy="16" r="2.6" fill="#14203b"/></svg>
+      Artemis
+    </a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <span class="menu-label">Menu</span>
+    </button>
+    <nav class="nav" id="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="/results">Results</a></li>
+        <li><a href="/method">Method</a></li>
+        <li><a href="/about">About</a></li>
+        <li class="nav-cta"><a href="/lab">Start an investigation</a></li>
+      </ul>
+    </nav>
   </div>
-</div>
+</header>
+<main id="main">
 
-<script>
-(() => {
-  "use strict";
-  const $ = (id) => document.getElementById(id);
-  const statusEl = $("status"), logEl = $("log"), replyEl = $("reply");
-  let t0 = performance.now(), source = null, session = null, logStarted = false, finished = false;
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <h1>An AI lab that runs its own experiments and shows its work.</h1>
+      <p class="lede">Artemis turns a scientific question into a measurable experiment. A team of AI agents runs it on public data, and everything is published: the code, the data, the failures and the final report.</p>
+      <p class="lede">In its first run, the agents built a way to choose solar-cell materials to calculate. On data they had never seen, it found every excellent candidate in 8 expensive calculations. The textbook rule needed 20, and random picking would need about 344.</p>
+      <div class="actions">
+        <a class="button button-primary" href="/results/solar-absorbers-2026-10-03">Read the first result</a>
+        <a class="button button-quiet" href="/lab">Start an investigation</a>
+      </div>
+    </div>
+    <figure class="lattice-figure">
+      <div class="lattice-frame" role="img" aria-label="An illustrative rock-salt crystal lattice, slowly turning">
+        <div class="lattice-fallback" id="lattice-fallback" aria-hidden="true">
+          <svg viewBox="0 0 200 200" width="70%"><g stroke="#c4cddb" stroke-width="1.2" fill="none"><path d="M40 60h80v80H40zM80 30h80v80H80zM40 60l40-30M120 60l40-30M40 140l40-30M120 140l40-30"/></g><g fill="#2b3a6b"><circle cx="40" cy="60" r="7"/><circle cx="120" cy="140" r="7"/><circle cx="160" cy="30" r="7"/><circle cx="80" cy="110" r="7"/></g><g fill="#d9b98a"><circle cx="120" cy="60" r="8"/><circle cx="40" cy="140" r="8"/><circle cx="80" cy="30" r="8"/><circle cx="160" cy="110" r="8"/></g></svg>
+        </div>
+        <div id="lattice" class="lattice-canvas"></div>
+      </div>
+      <figcaption class="lattice-caption">An illustrative rock-salt crystal lattice. Drag to turn it.</figcaption>
+    </figure>
+  </div>
+</section>
 
-  const secs = () => ((performance.now() - t0) / 1000).toFixed(1);
+<section class="section" id="first-result">
+  <div class="wrap">
+    <div class="result-intro">
+      <div class="section-head">
+        <h2>The first result</h2>
+        <p>The lab looked for solar-cell materials made only of earth-abundant elements, with the most toxic heavy metals excluded. A material counts as excellent if its calculated efficiency limit is at least 30 percent and it is close to stable. That calculation is expensive, so the order you run candidates in decides how quickly you find anything.</p>
+        <p>The agents tried 19 ideas, kept 4, and rejected their own highest-scoring trial as a fluke of the small practice set. Four hits on the final test is too few to trust alone, so afterwards a rebuilt copy of their method was tested on 20 larger pools. It beat the textbook rule in all 20 and the corrected-gap rule in 19.</p>
+      </div>
+      <div>
+        <p class="small" style="margin:0 0 4px">Held-out test: expensive calculations needed to find all 4 excellent absorbers among 429 candidates. Fewer is better.</p>
+        <dl class="keynums">
+          <div class="ours"><dt>Artemis method</dt><dd>8</dd></div>
+          <div><dt>Textbook rule: stable first, then band gap nearest 1.34 eV</dt><dd>20</dd></div>
+          <div><dt>Random order, expected</dt><dd>344</dd></div>
+        </dl>
+      </div>
+    </div>
+    <figure class="surface figure figure-wide">
+      <p class="chart-title">Expensive calculations needed to find 10 excellent absorbers</p>
+      <p class="chart-sub">20 random pools of 2,204 earth-abundant materials. Each dot is one pool; the bar marks the median. Fewer is better.</p>
+      <div class="chart-wrap" data-strip-chart data-src="/data/phase2/robustness.json"></div>
+      <figcaption>Median calculations: Artemis method 14.5, corrected-gap rule 26, textbook rule 47.5, random order about 1,161. The textbook rule puts stable materials first, then picks band gaps nearest 1.34 eV. The corrected-gap rule, which the agents derived from the training data, aims at the right gap for this kind of calculation. This check came after the official test and used a rebuilt copy of the method; <a href="/results/solar-absorbers-2026-10-03#robustness">read the details</a>.</figcaption>
+    </figure>
+  </div>
+</section>
 
-  function setHop(name, state, note) {
-    const el = $("hop-" + name);
-    if (!el) return;
-    const order = { idle: 0, wait: 1, ok: 2, fail: 3 };
-    if (order[state] < order[el.dataset.state] && el.dataset.state !== "wait") return;
-    el.dataset.state = state;
-    // Website and server are checked on page load, so only time the run-phase stations.
-    const timed = name !== "website" && name !== "server";
-    if (timed && (state === "ok" || state === "fail")) el.querySelector(".station-time").textContent = secs() + " s";
-    if (!note && state === "ok" && name === "sandbox") note = "ready";
-    if (note) el.querySelector(".station-note").textContent = note;
-  }
+<section class="section" id="how-it-works">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>How a run works</h2>
+      <p>Each run follows the same five steps, done by agents with separate jobs, so no agent grades its own work.</p>
+    </div>
+    <ol class="steps">
+      <li><h3>Frame the question</h3><span class="who">Compiler</span><p>The question becomes a fixed test with a success threshold, a metric and a held-out set, written down before any idea is tried.</p></li>
+      <li><h3>Read the field</h3><span class="who">Scout</span><p>Quick searches of the literature and materials databases, citing only sources that were actually found.</p></li>
+      <li><h3>Experiment in waves</h3><span class="who">Planner and Experimenters</span><p>Ideas are proposed, then implemented and scored in parallel against a frozen judge.</p></li>
+      <li><h3>Challenge every gain</h3><span class="who">Skeptic</span><p>Any improvement is re-run, read for leakage and tested again before it is kept.</p></li>
+      <li><h3>Test once and report</h3><span class="who">Compiler and Scribe</span><p>The final method meets the held-out data exactly once, and the report records what failed as well as what worked.</p></li>
+    </ol>
+  </div>
+</section>
 
-  function log(text, bad) {
-    if (!logStarted) { logEl.innerHTML = ""; logStarted = true; }
-    const li = document.createElement("li");
-    li.innerHTML = "<time></time><span></span>";
-    li.querySelector("time").textContent = secs() + " s";
-    const span = li.querySelector("span");
-    span.textContent = text;
-    if (bad) span.className = "bad";
-    logEl.appendChild(li);
-    logEl.scrollTop = logEl.scrollHeight;
-  }
+<section class="section" id="trust">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Why the numbers can be trusted</h2>
+    </div>
+    <div class="trust">
+      <div><h3>A frozen judge</h3><p>The scoring code and data are fingerprinted. Every result records those fingerprints, so any change would show.</p></div>
+      <div><h3>Rules set in advance</h3><p>The success threshold and metric were fixed before the first experiment, in code the agents cannot edit.</p></div>
+      <div><h3>One look at the answer</h3><p>The held-out test runs exactly once. The lab cannot try again for a better number.</p></div>
+      <div><h3>Everything is public</h3><p>The report, experiment log, code and data are open. A rebuild of the final method matched the lab's practice score exactly.</p></div>
+    </div>
+  </div>
+</section>
 
-  function say(text, bad) { statusEl.textContent = text; statusEl.className = "status-line" + (bad ? " bad" : ""); }
+<section class="cta-band">
+  <div class="wrap cta-grid">
+    <div>
+      <h2>Have a question worth testing?</h2>
+      <p>Describe it, and the lab's Compiler drafts an experiment you could run: what to measure, which public data to use, what to compare against, and whether Artemis can run it today.</p>
+    </div>
+    <div class="actions">
+      <a class="button button-primary" href="/lab">Propose a question</a>
+      <a class="button button-quiet" href="/method">Read how it works</a>
+    </div>
+  </div>
+</section>
 
-  async function checkStatus() {
-    try {
-      const res = await fetch("/api/status", { cache: "no-store" });
-      const body = await res.json();
-      setHop("website", res.ok ? "ok" : "fail");
-      if (!body.configured) { setHop("server", "fail", "relay not configured"); say("The relay has no Omnigent settings yet: " + body.detail, true); return; }
-      if (body.server_ok && body.credentials_ok) setHop("server", "ok", "reachable, credentials accepted");
-      else { setHop("server", "fail", body.server_ok ? "credentials rejected" : "not reachable"); say(body.detail || "Omnigent server check failed.", true); }
-    } catch (err) {
-      setHop("website", "fail"); say("Could not reach the website backend: " + err, true);
-    }
-  }
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="/">
+          <svg viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="#14203b" stroke-width="1.6"><path d="M8 8h16v16H8z"/><path d="M8 8l8 8 8-8M8 24l8-8 8 8"/></g><circle cx="8" cy="8" r="3.4" fill="#2343c8"/><circle cx="24" cy="8" r="3.4" fill="#c27c00"/><circle cx="8" cy="24" r="3.4" fill="#c27c00"/><circle cx="24" cy="24" r="3.4" fill="#2343c8"/><circle cx="16" cy="16" r="2.6" fill="#14203b"/></svg>
+          Artemis
+        </a>
+        <p>An autonomous AI lab that turns a scientific question into a measured experiment and publishes everything it did.</p>
+      </div>
+      <div>
+        <p class="footer-title">Explore</p>
+        <ul>
+          <li><a href="/lab">Start an investigation</a></li>
+          <li><a href="/results">Results</a></li>
+          <li><a href="/method">Method</a></li>
+          <li><a href="/about">About</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-title">First result</p>
+        <ul>
+          <li><a href="/results/solar-absorbers-2026-10-03">Solar absorbers report</a></li>
+          <li><a href="/results/solar-absorbers-2026-10-03#recommendations">Materials to compute next</a></li>
+          <li><a href="/data/phase2/robustness.csv">Robustness data (CSV)</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-title">Open source</p>
+        <ul>
+          <li><a href="https://github.com/alessoh/artemis">Code on GitHub</a></li>
+          <li><a href="https://jarvis.nist.gov/">NIST JARVIS data</a></li>
+          <li><a href="https://github.com/omnigent-ai/omnigent">Omnigent</a></li>
+          <li><a href="/status">System status</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-base">
+      <span>Built for Challenge 03 of the 7th Global AI Hackathon.</span>
+      <span>Results are computational predictions, not laboratory measurements.</span>
+    </div>
+  </div>
+</footer>
+<script src="/assets/site.js?v=d97183e016" defer></script>
 
-  function handleEvent(ev) {
-    const type = ev.type || "?";
-    if (type === "artemis.relay") {
-      if (ev.state === "connected") { setHop("stream", "wait", "relay connected"); log("Relay connected to Omnigent stream"); if (relayReady) relayReady(); }
-      else if (ev.state === "rotating") log("Relay connection rotating (normal, reconnecting)");
-      else { log("Relay upstream error " + (ev.status || ""), true); }
-      return;
-    }
-    setHop("stream", "ok", "events arriving");
-    if (type === "session.sandbox_status") {
-      log("Sandbox stage: " + ev.stage, ev.stage === "failed");
-      if (ev.stage === "failed") { setHop("sandbox", "fail", ev.error || "launch failed"); say("Sandbox launch failed: " + (ev.error || "unknown"), true); }
-      else if (ev.stage === "ready") setHop("sandbox", "ok", "ready");
-      else setHop("sandbox", "wait", ev.stage);
-      return;
-    }
-    if (type === "response.output_text.delta") {
-      if ($("hop-model").dataset.state !== "ok") { setHop("sandbox", "ok"); setHop("model", "ok", "replying"); log("First text from Claude"); replyEl.textContent = ""; replyEl.classList.remove("empty"); }
-      replyEl.textContent += ev.delta || "";
-      return;
-    }
-    if (type === "turn.started") { setHop("model", "wait", "thinking"); }
-    if (type === "response.error" || type === "turn.failed" || type === "response.failed") {
-      const detail = JSON.stringify(ev.error || (ev.response && ev.response.error) || ev).slice(0, 240);
-      setHop("model", "fail", "error"); log(type + ": " + detail, true); say("The agent reported an error. See the event log.", true);
-    }
-    if (type === "turn.completed" || type === "response.completed") {
-      if (!finished) { finished = true; log(type); say("All stations reported in. The lab is connected end to end."); }
-      return;
-    }
-    if (!type.endsWith(".delta") && type !== "session.heartbeat" && type !== "response.heartbeat") log(type);
-  }
-
-  let relayReady = null;
-  function openStream() {
-    const url = `/api/sessions/${encodeURIComponent(session.session_id)}/stream?t=${encodeURIComponent(session.stream_token)}`;
-    let resolveReady;
-    const ready = new Promise((r) => { resolveReady = r; });
-    relayReady = resolveReady;
-    setTimeout(resolveReady, 5000);
-    source = new EventSource(url);
-    source.onmessage = (m) => { try { handleEvent(JSON.parse(m.data)); } catch (_) {} };
-    // Omnigent names its events, so listen for any named event too.
-    const named = ["artemis.relay","session.sandbox_status","session.status","turn.started","turn.completed","turn.failed",
-      "response.created","response.in_progress","response.output_text.delta","response.output_item.done","response.completed",
-      "response.failed","response.error","session.usage","session.model","session.title"];
-    named.forEach((n) => source.addEventListener(n, (m) => { try { handleEvent(JSON.parse(m.data)); } catch (_) {} }));
-    source.onerror = () => { if (finished) { source.close(); } };
-    return ready;
-  }
-
-  $("ask-form").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    if (source) source.close();
-    t0 = performance.now(); finished = false; logStarted = false;
-    ["sandbox", "model", "stream"].forEach((h) => { const el = $("hop-" + h); el.dataset.state = "idle"; el.querySelector(".station-time").textContent = ""; });
-    replyEl.textContent = "Waiting for the agent."; replyEl.classList.add("empty");
-    $("run").disabled = true; say("Creating a lab session.");
-    try {
-      const res = await fetch("/api/sessions", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ access_code: $("code").value }),
-      });
-      const body = await res.json().catch(() => ({}));
-      if (!res.ok) { say(body.detail || ("Session request failed with HTTP " + res.status), true); $("run").disabled = false; return; }
-      session = body; log("Session created: " + session.session_id);
-      setHop("sandbox", "wait", "provisioning");
-      $("end").disabled = false;
-      await openStream();
-      say("Stream open. Sending your question; the sandbox may take up to two minutes to start.");
-      const sent = await fetch(`/api/sessions/${encodeURIComponent(session.session_id)}/message?t=${encodeURIComponent(session.stream_token)}`, {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: $("message").value }),
-      });
-      const ack = await sent.json().catch(() => ({}));
-      if (!sent.ok) { say(ack.detail || ("Sending the message failed with HTTP " + sent.status), true); }
-      else { log("Message delivered to the agent"); if (!finished) say("Message delivered. Waiting for the agent's reply."); }
-    } catch (err) { say("Request failed: " + err, true); }
-    $("run").disabled = false;
-  });
-
-  $("end").addEventListener("click", async () => {
-    if (!session) return;
-    if (source) source.close();
-    const res = await fetch(`/api/sessions/${encodeURIComponent(session.session_id)}?t=${encodeURIComponent(session.stream_token)}`, { method: "DELETE" });
-    log(res.ok ? "Session ended, sandbox terminated" : "Ending the session failed (HTTP " + res.status + ")", !res.ok);
-    $("end").disabled = true; session = null;
-  });
-
-  checkStatus();
-})();
-</script>
 </body>
 </html>

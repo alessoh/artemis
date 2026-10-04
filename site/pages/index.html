@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <h1>An AI lab that runs its own experiments and shows its work.</h1>
+      <p class="lede">Artemis turns a scientific question into a measurable experiment. A team of AI agents runs it on public data, and everything is published: the code, the data, the failures and the final report.</p>
+      <p class="lede">In its first run, the agents built a way to choose solar-cell materials to calculate. On data they had never seen, it found every excellent candidate in 8 expensive calculations. The textbook rule needed 20, and random picking would need about 344.</p>
+      <div class="actions">
+        <a class="button button-primary" href="{{ flagship_path }}">Read the first result</a>
+        <a class="button button-quiet" href="/lab">Start an investigation</a>
+      </div>
+    </div>
+    <figure class="lattice-figure">
+      <div class="lattice-frame" role="img" aria-label="An illustrative rock-salt crystal lattice, slowly turning">
+        <div class="lattice-fallback" id="lattice-fallback" aria-hidden="true">
+          <svg viewBox="0 0 200 200" width="70%"><g stroke="#c4cddb" stroke-width="1.2" fill="none"><path d="M40 60h80v80H40zM80 30h80v80H80zM40 60l40-30M120 60l40-30M40 140l40-30M120 140l40-30"/></g><g fill="#2b3a6b"><circle cx="40" cy="60" r="7"/><circle cx="120" cy="140" r="7"/><circle cx="160" cy="30" r="7"/><circle cx="80" cy="110" r="7"/></g><g fill="#d9b98a"><circle cx="120" cy="60" r="8"/><circle cx="40" cy="140" r="8"/><circle cx="80" cy="30" r="8"/><circle cx="160" cy="110" r="8"/></g></svg>
+        </div>
+        <div id="lattice" class="lattice-canvas"></div>
+      </div>
+      <figcaption class="lattice-caption">An illustrative rock-salt crystal lattice. Drag to turn it.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="section" id="first-result">
+  <div class="wrap">
+    <div class="result-intro">
+      <div class="section-head">
+        <h2>The first result</h2>
+        <p>The lab looked for solar-cell materials made only of earth-abundant elements, with the most toxic heavy metals excluded. A material counts as excellent if its calculated efficiency limit is at least 30 percent and it is close to stable. That calculation is expensive, so the order you run candidates in decides how quickly you find anything.</p>
+        <p>The agents tried 19 ideas, kept 4, and rejected their own highest-scoring trial as a fluke of the small practice set. Four hits on the final test is too few to trust alone, so afterwards a rebuilt copy of their method was tested on 20 larger pools. It beat the textbook rule in all 20 and the corrected-gap rule in 19.</p>
+      </div>
+      <div>
+        <p class="small" style="margin:0 0 4px">Held-out test: expensive calculations needed to find all 4 excellent absorbers among 429 candidates. Fewer is better.</p>
+        <dl class="keynums">
+          <div class="ours"><dt>Artemis method</dt><dd>8</dd></div>
+          <div><dt>Textbook rule: stable first, then band gap nearest 1.34 eV</dt><dd>20</dd></div>
+          <div><dt>Random order, expected</dt><dd>344</dd></div>
+        </dl>
+      </div>
+    </div>
+    <figure class="surface figure figure-wide">
+      <p class="chart-title">Expensive calculations needed to find 10 excellent absorbers</p>
+      <p class="chart-sub">20 random pools of {{ r.pool_size | thousands }} earth-abundant materials. Each dot is one pool; the bar marks the median. Fewer is better.</p>
+      <div class="chart-wrap" data-strip-chart data-src="/data/phase2/robustness.json"></div>
+      <figcaption>Median calculations: Artemis method {{ r.median_model }}, corrected-gap rule {{ r.median_corrected }}, textbook rule {{ r.median_rule }}, random order about {{ r.median_random | thousands }}. The textbook rule puts stable materials first, then picks band gaps nearest 1.34 eV. The corrected-gap rule, which the agents derived from the training data, aims at the right gap for this kind of calculation. This check came after the official test and used a rebuilt copy of the method; <a href="{{ flagship_path }}#robustness">read the details</a>.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="section" id="how-it-works">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>How a run works</h2>
+      <p>Each run follows the same five steps, done by agents with separate jobs, so no agent grades its own work.</p>
+    </div>
+    <ol class="steps">
+      <li><h3>Frame the question</h3><span class="who">Compiler</span><p>The question becomes a fixed test with a success threshold, a metric and a held-out set, written down before any idea is tried.</p></li>
+      <li><h3>Read the field</h3><span class="who">Scout</span><p>Quick searches of the literature and materials databases, citing only sources that were actually found.</p></li>
+      <li><h3>Experiment in waves</h3><span class="who">Planner and Experimenters</span><p>Ideas are proposed, then implemented and scored in parallel against a frozen judge.</p></li>
+      <li><h3>Challenge every gain</h3><span class="who">Skeptic</span><p>Any improvement is re-run, read for leakage and tested again before it is kept.</p></li>
+      <li><h3>Test once and report</h3><span class="who">Compiler and Scribe</span><p>The final method meets the held-out data exactly once, and the report records what failed as well as what worked.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="section" id="trust">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Why the numbers can be trusted</h2>
+    </div>
+    <div class="trust">
+      <div><h3>A frozen judge</h3><p>The scoring code and data are fingerprinted. Every result records those fingerprints, so any change would show.</p></div>
+      <div><h3>Rules set in advance</h3><p>The success threshold and metric were fixed before the first experiment, in code the agents cannot edit.</p></div>
+      <div><h3>One look at the answer</h3><p>The held-out test runs exactly once. The lab cannot try again for a better number.</p></div>
+      <div><h3>Everything is public</h3><p>The report, experiment log, code and data are open. A rebuild of the final method matched the lab's practice score exactly.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="wrap cta-grid">
+    <div>
+      <h2>Have a question worth testing?</h2>
+      <p>Describe it, and the lab's Compiler drafts an experiment you could run: what to measure, which public data to use, what to compare against, and whether Artemis can run it today.</p>
+    </div>
+    <div class="actions">
+      <a class="button button-primary" href="/lab">Propose a question</a>
+      <a class="button button-quiet" href="/method">Read how it works</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

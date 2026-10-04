@@ -2,3 +2,5 @@
 fastapi>=0.115
 httpx>=0.27
 pydantic>=2.7
+# Saved lab runs in the Neon Postgres database.
+psycopg[binary]>=3.2

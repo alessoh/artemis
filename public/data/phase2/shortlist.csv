@@ -1,0 +1,16 @@
+rank,jarvis_id,formula,space_group,optb88vdw_gap_ev,energy_above_hull_ev_per_atom,formation_energy_ev_per_atom,note
+1,JVASP-90503,Rb2NiF6,Fm-3m,1.606,0.000,-2.36246,On the hull; ranked mainly for its composition
+2,JVASP-120881,SrBeBr2,Fm-3m,1.039,0.064,-0.84604,No literature found
+3,JVASP-78443,SmS,Fm-3m,0.000,0.058,-2.17019,Metallic at this level of theory; likely false positive
+4,JVASP-111073,CuCl,F-43m,0.586,0.000,-0.44562,Literature says wide-gap; verify before trusting the rank
+5,JVASP-14566,DyS,Fm-3m,0.000,0.032,-2.14212,Metallic at this level of theory; likely false positive
+6,JVASP-114550,BaZnCl2,P4mm,1.107,0.020,-1.56891,No literature found
+7,JVASP-12510,CuCl,Pa-3,0.590,0.011,-0.42305,Second CuCl structure; as rank 4
+8,JVASP-59094,Na10CaSn12,I-43m,0.775,0.000,-0.31712,No literature found
+9,JVASP-59095,Na10SrSn12,I-43m,0.776,0.000,-0.32036,Not searched
+10,JVASP-10972,SrCaGe,Pnma,0.471,0.000,-0.71249,Only unrelated literature
+11,JVASP-9128,Sr2Ge,Pnma,0.388,0.000,-0.63223,Not searched
+12,JVASP-12504,CuBr,Pa-3,0.317,0.013,-0.24627,Has band-gap literature
+13,JVASP-100007,Cu2BrCl,R-3m,0.423,0.000,-0.22102,No literature found
+14,JVASP-115581,BaZnF2,P4mm,1.347,0.000,-2.49285,No literature found
+15,JVASP-98069,LaS,Cmce,0.000,0.082,-2.36006,Metallic at this level of theory; likely false positive

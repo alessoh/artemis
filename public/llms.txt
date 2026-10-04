@@ -1,0 +1,31 @@
+# Artemis
+
+> Artemis is an open-source autonomous AI lab for scientific discovery. It turns a scientific question into a measured experiment, runs it with six AI agents on public data, tests the result once on held-out data, and publishes the report, code and data. In its first run (October 3, 2026) the agents built a way to choose earth-abundant solar-cell materials to calculate that found every excellent candidate on held-out data in 8 expensive calculations, where the textbook rule needed 20.
+
+Key facts:
+
+- Question: which earth-abundant crystals in NIST JARVIS-DFT should be calculated next to find excellent solar absorbers fastest. Excellent means a spectroscopic limited maximum efficiency (SLME) of at least 30 percent and an energy above the convex hull of at most 0.1 eV per atom. Earth-abundant means every element has a crustal abundance of at least 1 mg/kg; Cd, Hg, Pb, Tl, As and radioactive elements are excluded.
+- Official held-out test (429 materials, 4 excellent absorbers, run once): Artemis method 8 calculations to find all 4; textbook rule (stable materials first, then band gap nearest 1.34 eV) 20; random search about 344.
+- Later robustness check by the Artemis team, using a rebuilt copy of the method on 20 random halves of the same 4,409 materials (36 excellent absorbers in total, so the pools overlap): median calculations to find 10 excellent absorbers were 14.5 for Artemis, 26 for a corrected band-gap rule, 47.5 for the textbook rule and about 1,161 for random search. Artemis beat the textbook rule in 20 of 20 pools.
+- The results are computational predictions from DFT data, not laboratory measurements, and no new material has been confirmed.
+- Agents: Compiler, Scout, Planner, Experimenter, Skeptic and Scribe. Models: Claude Opus 5.5 and Claude Haiku 4.5. Harness: Omnigent (open source, from Databricks) on Modal.
+- Built by Peter Alesso for Challenge 03 of the 7th Global AI Hackathon. Code under the MIT license.
+
+## Pages
+
+- [First result: earth-abundant solar absorbers](https://artemis-ten-blond.vercel.app/results/solar-absorbers-2026-10-03): full report, held-out test, robustness check, materials to compute next
+- [How Artemis works](https://artemis-ten-blond.vercel.app/method): first principles, the three-file AutoResearch loop, the six agents and guardrails
+- [Published lab runs](https://artemis-ten-blond.vercel.app/results): every finished run
+- [Start an investigation](https://artemis-ten-blond.vercel.app/lab): propose a question or rerun the flagship program
+- [About](https://artemis-ten-blond.vercel.app/about): who built Artemis, data sources, frequently asked questions
+
+## Data
+
+- [Robustness check, 20 pools (CSV)](https://artemis-ten-blond.vercel.app/data/phase2/robustness.csv)
+- [Top 15 materials to compute next (CSV)](https://artemis-ten-blond.vercel.app/data/phase2/shortlist.csv)
+- [The lab's own report (Markdown)](https://artemis-ten-blond.vercel.app/data/phase2/lab_report.md)
+
+## Optional
+
+- [Full text for language models](https://artemis-ten-blond.vercel.app/llms-full.txt)
+- [Source code on GitHub](https://github.com/alessoh/artemis)

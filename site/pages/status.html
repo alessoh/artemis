@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head">
+  <div class="wrap">
+    <h1>System status</h1>
+    <p class="lede">A live check of each part of the lab. The first three are checked when the page opens. The rest are tested by sending one short question to a small test agent.</p>
+  </div>
+</section>
+<section class="section" style="padding-top:16px">
+  <div class="wrap lab-grid equal">
+    <div class="surface panel">
+      <h2 style="font-size:1.3rem">Parts of the lab</h2>
+      <div class="table-wrap" style="border:0"><table class="data status-table" id="hops">
+        <tbody>
+          <tr data-hop="website"><td>Website</td><td class="small">Vercel relay</td><td><span class="tag" data-state>checking</span></td></tr>
+          <tr data-hop="server"><td>Omnigent server</td><td class="small">Modal</td><td><span class="tag" data-state>checking</span></td></tr>
+          <tr data-hop="database"><td>Results database</td><td class="small">Neon Postgres</td><td><span class="tag" data-state>checking</span></td></tr>
+          <tr data-hop="sandbox"><td>Agent sandbox</td><td class="small">Modal</td><td><span class="tag" data-state>not tested</span></td></tr>
+          <tr data-hop="model"><td>Claude model</td><td class="small">Anthropic</td><td><span class="tag" data-state>not tested</span></td></tr>
+          <tr data-hop="stream"><td>Live stream</td><td class="small">back to you</td><td><span class="tag" data-state>not tested</span></td></tr>
+        </tbody>
+      </table></div>
+      <p class="small" style="margin-top:16px">Green means the part answered just now. The last three are tested only when you run the check, because that starts a small paid session.</p>
+    </div>
+    <form class="surface panel" id="check-form">
+      <h2 style="font-size:1.3rem">Test the full path</h2>
+      <p class="small">A small agent restates your question and names one public database that could help. It takes about 30 seconds and needs the access code.</p>
+      <div class="field"><label for="check-message">Question</label><textarea id="check-message" maxlength="4000">Which earth-abundant materials could make efficient solar cells?</textarea></div>
+      <div class="field"><label for="check-code">Access code</label><input type="password" id="check-code" autocomplete="off"></div>
+      <button class="button button-primary" type="submit" id="check-button">Run the check</button>
+      <p class="form-status" id="check-status" role="status" aria-live="polite"></p>
+      <div class="feed" id="check-reply" hidden><article><time>Reply</time><div class="msg" id="check-text"></div></article></div>
+    </form>
+  </div>
+</section>
+{% endblock %}

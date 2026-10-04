@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head result-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/results">Results</a></p>
+    <h1 class="result-title">Earth-abundant solar absorbers: which crystals to compute next</h1>
+    <p class="lede">The first Artemis run. Six AI agents searched NIST JARVIS for solar-cell materials made of earth-abundant elements, with the most toxic heavy metals excluded, and built a faster way to choose which ones to calculate.</p>
+    <div class="result-meta"><span class="tag tag-good">Complete</span><span>Flagship program</span><span>Run on <time datetime="2026-10-03">October 3, 2026</time> (US Pacific time)</span></div>
+    <dl class="facts">
+      <div><dt>Calculations to find all 4 hits on held-out data, against the textbook rule</dt><dd class="num">8 <span>vs 20</span></dd></div>
+      <div><dt>Median calculations to find 10 hits in a later 20-pool check of a rebuilt copy</dt><dd class="num">{{ r.median_model }} <span>vs {{ r.median_rule }}</span></dd></div>
+      <div><dt>Pools where the rebuilt copy beat the textbook rule</dt><dd class="num">20 of 20</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="section" style="padding-top:8px">
+  <div class="wrap result-layout">
+    <nav class="toc" aria-label="On this page">
+      <p>On this page</p>
+      <ol>
+        <li><a href="#summary">Summary</a></li>
+        <li><a href="#held-out">Held-out test</a></li>
+        <li><a href="#robustness">Robustness check</a></li>
+        <li><a href="#tried">What the lab tried</a></li>
+        <li><a href="#learned">What it learned</a></li>
+        <li><a href="#recommendations">What to compute next</a></li>
+        <li><a href="#method">The final method</a></li>
+        <li><a href="#limits">Limits</a></li>
+        <li><a href="#files">Files and full report</a></li>
+      </ol>
+    </nav>
+    <article>
+      <section class="result-section" id="summary">
+        <h2>Summary</h2>
+        <div class="prose">
+          <p>The question was which earth-abundant inorganic crystals in NIST JARVIS-DFT a lab should calculate next to find excellent solar absorbers. Every element had to be common in the Earth's crust, and cadmium, mercury, lead, thallium, arsenic and radioactive elements were excluded.</p>
+          <p>An excellent absorber has a spectroscopic limited maximum efficiency (SLME, a calculated upper limit on solar-cell efficiency) of at least 30 percent. It must also sit no more than 0.1 eV per atom above the convex hull, which measures how far a crystal is from being stable; zero means stable. Both thresholds were fixed before any experiment ran.</p>
+          <p>SLME needs an expensive calculation, so the lab's job was to rank candidates using only cheap information and reach the excellent ones in as few expensive calculations as possible. The winning method puts near-stable materials first. It then orders them by an SLME predicted from cheap properties and composition, using an ensemble of randomized decision trees trained on materials JARVIS has already assessed.</p>
+        </div>
+      </section>
+
+      <section class="result-section" id="held-out">
+        <h2>Held-out test</h2>
+        <div class="prose"><p>The lab ran its final method once on a test pool it had never seen: 429 earth-abundant candidates, 4 of them excellent absorbers. The baselines were scored on the same pool.</p></div>
+        <div class="table-wrap"><table class="data">
+          <thead><tr><th>Method</th><th class="n">Calculations to find all 4</th><th class="n">Acceleration over random</th><th class="n">Average precision</th></tr></thead>
+          <tbody>
+            <tr><td>Random order (expected)</td><td class="n">344</td><td class="n">1.0</td><td class="n">n/a</td></tr>
+            <tr><td>Band gap nearest 1.34 eV only</td><td class="n">199</td><td class="n">1.7</td><td class="n">0.033</td></tr>
+            <tr><td>Textbook rule: stable first, then band gap nearest 1.34 eV</td><td class="n">20</td><td class="n">17.2</td><td class="n">0.575</td></tr>
+            <tr class="highlight"><td>Artemis final method</td><td class="n">8</td><td class="n">43.0</td><td class="n">0.813</td></tr>
+          </tbody>
+        </table></div>
+        <p class="callout">With only four hits, this result rests on where single materials landed. The textbook rule found the hits at positions 1, 4, 5 and 20; the method found all four within its first 8. The robustness check below tests the claim on more data.</p>
+      </section>
+
+      <section class="result-section" id="robustness">
+        <h2>Robustness check</h2>
+        <div class="prose"><p>All {{ r.ea_labeled | thousands }} earth-abundant materials with a known SLME, 36 of them excellent absorbers, were split at random into two halves, twenty times. Each time, one half was the search pool and everything else trained the model. This check was run by the Artemis team after the official test, using the rebuilt copy of the final method described below, so it supports the result but was not pre-registered. The pools are halves of the same materials, so they are not independent tests.</p></div>
+        <figure class="surface figure">
+          <p class="chart-title">Expensive calculations needed to find 10 excellent absorbers</p>
+          <p class="chart-sub">20 random pools of {{ r.pool_size | thousands }} materials. Each dot is one pool; the bar marks the median. Fewer is better.</p>
+          <div class="chart-wrap" data-strip-chart data-src="/data/phase2/robustness.json"></div>
+          <figcaption>Code: <a href="https://github.com/alessoh/artemis/blob/main/lab/solar/analysis/robustness.py">robustness.py</a>. Data: <a href="/data/phase2/robustness.csv">robustness.csv</a>.</figcaption>
+        </figure>
+        <div class="table-wrap"><table class="data">
+          <thead><tr><th>Method</th><th class="n">Median calculations to 10 hits</th><th class="n">Median acceleration over random</th><th class="n">Median average precision</th></tr></thead>
+          <tbody>
+            <tr><td>Random order (expected)</td><td class="n">about {{ r.median_random | thousands }}</td><td class="n">1.0</td><td class="n">n/a</td></tr>
+            <tr><td>Textbook rule</td><td class="n">{{ r.median_rule }}</td><td class="n">{{ r.acc_rule }}</td><td class="n">{{ r.ap_rule }}</td></tr>
+            <tr><td>Corrected-gap rule</td><td class="n">{{ r.median_corrected }}</td><td class="n">{{ r.acc_corrected }}</td><td class="n">{{ r.ap_corrected }}</td></tr>
+            <tr class="highlight"><td>Artemis final method (rebuilt)</td><td class="n">{{ r.median_model }}</td><td class="n">{{ r.acc_model }}</td><td class="n">{{ r.ap_model }}</td></tr>
+          </tbody>
+        </table></div>
+        <div class="prose"><p>The method needed fewer calculations than the textbook rule in all 20 pools. The median ratio was {{ r.ratio_median }}, and the ratio was at least 2 in {{ r.ratio_ge2 }} of the 20. Against the corrected-gap rule, a fairer simple baseline, it needed {{ r.median_model }} calculations instead of {{ r.median_corrected }}, and fewer in {{ r.wins_corrected }} of the 20 pools. Acceleration over random depends on each pool's size, its number of hits and the target, so the 43 on the test pool and the {{ r.acc_model }} here are not directly comparable; the ratio to the simple rules is the stable comparison.</p></div>
+      </section>
+
+      <section class="result-section" id="tried">
+        <h2>What the lab tried</h2>
+        <div class="prose"><p>Seven waves of experiments were scored on a 465-material practice pool with 9 hits. Four ideas were kept, each after the Skeptic re-ran it and checked it with cross-validation on the training data. The lab stopped by its own rule after three waves without a kept improvement, having used 26 of its 60 allowed evaluations.</p></div>
+        <div class="table-wrap"><table class="data trials">
+          <thead><tr><th>Idea</th><th class="n">Calculations to 9 hits</th><th class="n">Acceleration</th><th>Outcome</th></tr></thead>
+          <tbody>
+          {% for t in trials %}<tr class="{% if t.kept %}highlight{% else %}minor{% endif %}"><td>{{ t.idea }}<span class="code-name">{{ t.name }}</span></td><td class="n">{{ t.evals }}</td><td class="n">{{ t.acc }}</td><td><span class="tag {{ t.tag }}">{{ t.outcome }}</span></td></tr>
+          {% endfor %}
+          </tbody>
+        </table></div>
+        <button class="button button-quiet show-all" type="button" data-show-all>Show all 19 trials</button>
+        <p class="callout">The highest practice score in the run (34.95) came from a trial the Skeptic rejected. On the training data it did worse than the kept method, so its practice score was luck with 9 hits. Catching that is one reason to take the held-out result seriously.</p>
+      </section>
+
+      <section class="result-section" id="learned">
+        <h2>What it learned</h2>
+        <div class="prose">
+          <p><strong>Stability first.</strong> Putting near-stable materials first raised the band-gap rule's acceleration from about 1.7 to about 11 on the practice pool. An excellent absorber must also be stable, and that check is cheap.</p>
+          <p><strong>Aim the quick band gap near 0.7 eV, not 1.34 eV.</strong> JARVIS gives two band gaps: a quick one (the OptB88vdW method) and an accurate one (the TBmBJ method). Every excellent absorber in the training data with a known accurate gap lies between 0.92 and 1.66 eV, with a median of 1.35 eV. Their quick gaps have a median of only 0.66 eV, because the quick method underestimates gaps. Among stable training materials, about half of those with quick gaps between 0.3 and 0.8 eV are excellent absorbers. The share falls to 13 percent between 1.2 and 1.4 eV, and 1 percent above 1.8 eV (recomputed from the data snapshot).</p>
+          <p><strong>Composition matters beyond the gap.</strong> The best window shifts with the non-metal element, and the excellent absorbers cluster in alkali halides and fluorides and in compounds of antimony, indium, silver, copper and zinc. In cross-validation, the learned model roughly doubled what the corrected-gap rules achieved (acceleration about 50 against about 23). Predicting SLME itself worked better than predicting a yes-or-no label.</p>
+        </div>
+      </section>
+
+      <section class="result-section" id="recommendations">
+        <h2>What to compute next</h2>
+        <div class="prose"><p>These are the top-ranked materials among the 22,784 earth-abundant crystals that have no SLME value in JARVIS. Each is a prediction that needs the expensive calculation, and none is yet a discovery. The values are JARVIS's quick-method results.</p></div>
+        <div class="table-wrap"><table class="data shortlist">
+          <thead><tr><th class="n">Rank</th><th>Material</th><th>JARVIS ID</th><th>Space group</th><th class="n">Quick gap (eV)</th><th class="n">Above hull (eV/atom)</th><th>Note</th></tr></thead>
+          <tbody>
+          {% for s in shortlist %}<tr><td class="n">{{ s.rank }}</td><td class="material" data-rank="{{ s.rank }}"><strong>{{ s.formula_html | safe }}</strong></td><td class="nowrap">{{ s.jid }}</td><td class="nowrap">{{ s.spg_html | safe }}</td><td class="n">{{ s.gap }}</td><td class="n">{{ s.ehull }}</td><td>{{ s.note }}</td></tr>
+          {% endfor %}
+          </tbody>
+        </table></div>
+        <div class="prose"><p>Twelve of the fifteen are near-stable with a non-zero quick gap, and they are the natural first calculations. SmS, DyS and LaS have a quick gap of exactly zero, so they belong at the end of the queue. CuCl needs care: experiments describe its common form as a wide-gap material (<a href="https://doi.org/10.1016/j.jcrysgro.2005.10.053">J. Cryst. Growth, 2005</a>), which would make it a poor absorber despite its rank. Some candidates contain elements that need careful handling, such as beryllium in SrBeBr<sub>2</sub> and nickel in Rb<sub>2</sub>NiF<sub>6</sub>. The Materials Project cross-check did not run in this session, so these candidates have not yet been compared with an independent database.</p></div>
+      </section>
+
+      <section class="result-section" id="method">
+        <h2>The final method</h2>
+        <div class="prose">
+          <p>Candidates no more than 0.1 eV per atom above the hull go first. Within each group, candidates are ordered by SLME predicted by 500 randomized decision trees (scikit-learn's ExtraTreesRegressor, at least 2 samples per leaf), trained on the 7,250 JARVIS materials with known SLME. For the shortlist the model was retrained on 8,155, adding the practice pool.</p>
+          <p>The inputs are only what a routine calculation and the chemical formula provide: the quick band gap, formation energy, distance from the hull, number of elements and atoms, space group, density and volume per atom. They also include the mean and spread of Pauling electronegativity, the fractions of chalcogens, heavier halides and oxygen, and the fraction of each element.</p>
+          <p>The lab's original code was lost when its sandbox closed. The method was rebuilt from this description and matches the lab's practice result exactly: the ninth hit at calculation 13, with average precision 0.899. It also gives 14 of the same 15 recommendations. <a href="https://github.com/alessoh/artemis/blob/main/lab/solar/trials/extra_trees_elemfrac_rebuilt.py">Read the rebuilt code</a>.</p>
+        </div>
+      </section>
+
+      <section class="result-section" id="limits">
+        <h2>Limits</h2>
+        <div class="prose">
+          <p>The labels are computational. SLME is a theoretical efficiency limit from a calculated absorption spectrum. It says nothing about defects, how charge moves through the material, interfaces, or whether the material can be made.</p>
+          <p>The official practice and test pools were small, with 9 and 4 hits. The robustness check came after the official test, used a rebuilt copy of the method, and its pools overlap with each other and include the test materials. The lab also chose its method partly by looking at the practice pool, whose materials are spread through the robustness pools. The consistency across all 20 pools, and the Skeptic's earlier checks on training data alone, suggest this bias is not large, but they do not rule it out.</p>
+          <p>The toxicity screen excludes only Cd, Hg, Pb, Tl, As and radioactive elements.</p>
+        </div>
+      </section>
+
+      <section class="result-section" id="files">
+        <h2>Files and full report</h2>
+        <ul class="downloads">
+          <li><a href="/data/phase2/lab_report.md">Lab report written by the Scribe agent</a><span>Markdown</span></li>
+          <li><a href="/data/phase2/robustness.csv">Robustness check, 20 pools</a><span>CSV</span></li>
+          <li><a href="/data/phase2/shortlist.csv">Top 15 materials to compute next</a><span>CSV</span></li>
+          <li><a href="https://github.com/alessoh/artemis/blob/main/docs/Artemis_Phase2_Results.docx">Results write-up with verification notes</a><span>Word, on GitHub</span></li>
+          <li><a href="https://github.com/alessoh/artemis/tree/main/lab/solar">Harness, program and experiment code</a><span>GitHub</span></li>
+        </ul>
+        <details class="report">
+          <summary>The lab's own report, as written by its agents</summary>
+          <div class="prose"><p class="small">Reproduced as the agents wrote it. There, "non-toxic" means the Cd, Hg, Pb, Tl and As screen, and "never-assessed" means no SLME value in JARVIS.</p>{{ lab_report_html | safe }}</div>
+        </details>
+        <h3 class="sources-title">Sources</h3>
+        <div class="prose sources">
+          <p>Choudhary et al., JARVIS-Leaderboard, npj Computational Materials 10, 93 (2024), <a href="https://doi.org/10.1038/s41524-024-01259-w">doi:10.1038/s41524-024-01259-w</a>. Choudhary et al., JARVIS, npj Computational Materials 6, 173 (2020), <a href="https://doi.org/10.1038/s41524-020-00440-1">doi:10.1038/s41524-020-00440-1</a>. JARVIS-DFT 3D release of 2021-08-18, <a href="https://doi.org/10.6084/m9.figshare.6815699">figshare</a>. Choudhary et al., SLME in JARVIS, Chem. Mater. 31, 5900 (2019), <a href="https://doi.org/10.1021/acs.chemmater.9b02166">doi:10.1021/acs.chemmater.9b02166</a>. Crustal abundances from the CRC Handbook of Chemistry and Physics, 97th edition.</p>
+        </div>
+      </section>
+    </article>
+  </div>
+</section>
+{% endblock %}

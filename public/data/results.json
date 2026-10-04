@@ -1,0 +1,15 @@
+{
+  "results": [
+    {
+      "path": "/results/solar-absorbers-2026-10-03",
+      "title": "Earth-abundant solar absorbers: which crystals to compute next",
+      "summary": "Six agents built a ranking method that found all 4 excellent solar absorbers on held-out data in 8 expensive calculations, against 20 for the textbook rule. A later check of a rebuilt copy beat the textbook rule in 20 of 20 pools. Includes 15 materials to compute next.",
+      "kpi": "8 vs 20",
+      "kpi_label": "calculations to find every excellent absorber on held-out data",
+      "kind_label": "Flagship program",
+      "date": "2026-10-03",
+      "date_label": "October 3, 2026",
+      "url": "https://artemis-ten-blond.vercel.app/results/solar-absorbers-2026-10-03"
+    }
+  ]
+}

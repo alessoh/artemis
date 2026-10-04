@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head">
+  <div class="wrap">
+    <h1>Published lab runs</h1>
+    <p class="lede">Every run the lab finishes is published here with its full report. Runs in progress appear too, so you can follow them.</p>
+  </div>
+</section>
+<section class="section" style="padding-top:16px">
+  <div class="wrap">
+    {% for item in static_results %}
+    <a class="surface featured" href="{{ item.path }}">
+      <div>
+        <div class="result-meta" style="margin:0 0 10px"><span class="tag tag-good">Complete</span><span>{{ item.kind_label }}</span><span><time datetime="{{ item.date }}">{{ item.date_label }}</time></span></div>
+        <h2>{{ item.title }}</h2>
+        <p>{{ item.summary }}</p>
+        <span class="go">Read the report</span>
+      </div>
+      <div class="kpi"><strong>{{ item.kpi }}</strong><span>{{ item.kpi_label }}</span></div>
+    </a>
+    {% endfor %}
+    <h2 class="list-title">Runs started from the Lab page</h2>
+    <ul class="result-list" id="result-list"></ul>
+    <p class="small" id="results-status" role="status" aria-live="polite" style="margin-top:16px">No Lab-page runs have finished yet. They appear here when they do.</p>
+  </div>
+</section>
+{% endblock %}

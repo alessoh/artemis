@@ -21,3 +21,6 @@ runs/
 # Vercel and Modal local state
 .vercel/
 .modal.toml
+
+# Website build dependencies
+site/node_modules/

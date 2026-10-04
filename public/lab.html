@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en" data-version="d97183e016">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Start an investigation | Artemis lab</title>
+<meta name="description" content="Propose a scientific question and watch the Artemis agents draft a testable experiment live, or rerun the solar-absorber program. Finished runs are published.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://artemis-ten-blond.vercel.app/lab">
+<meta name="theme-color" content="#f4f6f9">
+<meta name="color-scheme" content="light">
+<meta name="author" content="Artemis lab">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Artemis">
+<meta property="og:title" content="Start an investigation | Artemis lab">
+<meta property="og:description" content="Propose a scientific question and watch the Artemis agents draft a testable experiment live, or rerun the solar-absorber program. Finished runs are published.">
+<meta property="og:url" content="https://artemis-ten-blond.vercel.app/lab">
+<meta property="og:image" content="https://artemis-ten-blond.vercel.app/og/artemis.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Artemis, an autonomous AI lab for materials discovery">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Start an investigation | Artemis lab">
+<meta name="twitter:description" content="Propose a scientific question and watch the Artemis agents draft a testable experiment live, or rerun the solar-absorber program. Finished runs are published.">
+<meta name="twitter:image" content="https://artemis-ten-blond.vercel.app/og/artemis.png">
+<meta name="twitter:image:alt" content="Artemis, an autonomous AI lab for materials discovery">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="alternate" type="text/plain" title="LLM-readable summary" href="/llms.txt">
+<link rel="preload" href="/assets/fonts/schibsted-grotesk-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/site.css?v=d97183e016">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "item": "https://artemis-ten-blond.vercel.app/", "name": "Artemis", "position": 1}, {"@type": "ListItem", "item": "https://artemis-ten-blond.vercel.app/lab", "name": "Start an investigation", "position": 2}]}</script>
+
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap header-row">
+    <a class="brand" href="/" aria-label="Artemis home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="#14203b" stroke-width="1.6"><path d="M8 8h16v16H8z"/><path d="M8 8l8 8 8-8M8 24l8-8 8 8"/></g><circle cx="8" cy="8" r="3.4" fill="#2343c8"/><circle cx="24" cy="8" r="3.4" fill="#c27c00"/><circle cx="8" cy="24" r="3.4" fill="#c27c00"/><circle cx="24" cy="24" r="3.4" fill="#2343c8"/><circle cx="16" cy="16" r="2.6" fill="#14203b"/></svg>
+      Artemis
+    </a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <span class="menu-label">Menu</span>
+    </button>
+    <nav class="nav" id="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="/results">Results</a></li>
+        <li><a href="/method">Method</a></li>
+        <li><a href="/about">About</a></li>
+        <li class="nav-cta"><a href="/lab" aria-current="page">Start an investigation</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<main id="main">
+
+<section class="page-head">
+  <div class="wrap">
+    <h1>Start an investigation</h1>
+    <p class="lede">Start a run and watch the agents work in real time. Every finished run is saved and published on the Results page.</p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:24px">
+  <div class="wrap lab-grid">
+    <form class="surface panel" id="run-form" novalidate>
+      <fieldset>
+        <legend>What should the lab do?</legend>
+        <div class="choice">
+          <label>
+            <input type="radio" name="kind" value="proposal" checked>
+            <span><strong>Draft an experiment for my question</strong>
+            <span>The Compiler turns your question into a testable plan: what to measure, which public data to use, baselines, risks, and whether Artemis can run it today. About 3 to 8 minutes.</span></span>
+          </label>
+          <label>
+            <input type="radio" name="kind" value="solar">
+            <span><strong>Run the solar-absorber program again</strong>
+            <span>All six agents repeat the flagship investigation from scratch, ending with a held-out test and a full report. One to three hours.</span></span>
+          </label>
+        </div>
+      </fieldset>
+
+      <div class="field" id="question-field">
+        <label for="question">Your question</label>
+        <textarea id="question" name="question" maxlength="2000" placeholder="For example: Which metal-organic frameworks in public databases could capture carbon dioxide from air most efficiently?"></textarea>
+        <p class="hint">Plain language is fine. Questions about weapons, toxins or tracking people are declined.</p>
+      </div>
+
+      <div class="field">
+        <label for="access-code">Access code</label>
+        <input type="password" id="access-code" name="access_code" autocomplete="off" spellcheck="false">
+        <p class="hint">Runs use paid computing, so starting one needs a code from the Artemis team. Reading results is open to everyone.</p>
+      </div>
+
+      <button class="button button-primary" type="submit" id="start-button">Start run</button>
+      <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+    </form>
+
+    <section class="surface panel live-panel" aria-labelledby="live-title">
+      <h2 id="live-title" style="font-size:1.35rem">Live run</h2>
+      <ol class="run-stages" id="stages" aria-label="Run progress">
+        <li data-stage="sandbox" data-state="idle">Sandbox</li>
+        <li data-stage="working" data-state="idle">Agents</li>
+        <li data-stage="saving" data-state="idle">Saving</li>
+        <li data-stage="done" data-state="idle">Published</li>
+      </ol>
+      <p class="small" id="run-meta">No run yet. Start one, or open a run in progress from the <a href="/results">Results</a> page.</p>
+      <div class="feed" id="feed" aria-live="polite">
+        <p class="empty-state">The lead agent's messages will appear here as it writes them.</p>
+      </div>
+      <div class="actions" id="run-actions" hidden>
+        <a class="button button-primary" id="result-link" href="/results" hidden>Read the saved report</a>
+        <button class="button button-danger" type="button" id="stop-button">Stop run</button>
+      </div>
+    </section>
+  </div>
+</section>
+
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="/">
+          <svg viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="#14203b" stroke-width="1.6"><path d="M8 8h16v16H8z"/><path d="M8 8l8 8 8-8M8 24l8-8 8 8"/></g><circle cx="8" cy="8" r="3.4" fill="#2343c8"/><circle cx="24" cy="8" r="3.4" fill="#c27c00"/><circle cx="8" cy="24" r="3.4" fill="#c27c00"/><circle cx="24" cy="24" r="3.4" fill="#2343c8"/><circle cx="16" cy="16" r="2.6" fill="#14203b"/></svg>
+          Artemis
+        </a>
+        <p>An autonomous AI lab that turns a scientific question into a measured experiment and publishes everything it did.</p>
+      </div>
+      <div>
+        <p class="footer-title">Explore</p>
+        <ul>
+          <li><a href="/lab">Start an investigation</a></li>
+          <li><a href="/results">Results</a></li>
+          <li><a href="/method">Method</a></li>
+          <li><a href="/about">About</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-title">First result</p>
+        <ul>
+          <li><a href="/results/solar-absorbers-2026-10-03">Solar absorbers report</a></li>
+          <li><a href="/results/solar-absorbers-2026-10-03#recommendations">Materials to compute next</a></li>
+          <li><a href="/data/phase2/robustness.csv">Robustness data (CSV)</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-title">Open source</p>
+        <ul>
+          <li><a href="https://github.com/alessoh/artemis">Code on GitHub</a></li>
+          <li><a href="https://jarvis.nist.gov/">NIST JARVIS data</a></li>
+          <li><a href="https://github.com/omnigent-ai/omnigent">Omnigent</a></li>
+          <li><a href="/status">System status</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-base">
+      <span>Built for Challenge 03 of the 7th Global AI Hackathon.</span>
+      <span>Results are computational predictions, not laboratory measurements.</span>
+    </div>
+  </div>
+</footer>
+<script src="/assets/site.js?v=d97183e016" defer></script>
+<script src="/assets/md.js?v=d97183e016" defer></script>
+<script src="/assets/lab.js?v=d97183e016" defer></script>
+
+</body>
+</html>

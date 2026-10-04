@@ -1,0 +1,11 @@
+{
+  "name": "artemis-site-build",
+  "private": true,
+  "description": "Build-time dependencies for the Artemis website (bundled by scripts/build_site.py). Nothing here runs on the server.",
+  "devDependencies": {
+    "@fontsource-variable/schibsted-grotesk": "^5.2.0",
+    "@fontsource-variable/source-serif-4": "^5.2.0",
+    "esbuild": "^0.25.0",
+    "three": "^0.186.1"
+  }
+}
