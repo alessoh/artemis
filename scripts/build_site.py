@@ -612,6 +612,10 @@ def build(site_url: str, images: bool) -> None:
         out = PUBLIC / meta["out"]
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(html, encoding="utf-8")
+        if meta["out"] == "404.html":
+            # Vercel does not bundle public/ with the Python function, so the API
+            # keeps its own copy of the 404 page for unknown paths it handles.
+            (ROOT / "artemis_core" / "not_found.html").write_text(html, encoding="utf-8")
 
     # 5. crawler and assistant files
     today = date.today().isoformat()

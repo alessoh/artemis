@@ -13,13 +13,68 @@ learned with citations.
 on the live Vercel site starts a fresh Modal sandbox, Claude answers, and the
 reply streams back to the browser in about 20 seconds.
 
-**Phase 2, the real lab: first run complete** (October 3, 2026; see [`docs/Artemis_Phase2_Results.docx`](docs/Artemis_Phase2_Results.docx)). The agents' method found excellent absorbers about three times faster than the best simple rule in 20 of 20 robustness trials. Flagship
-question: which earth-abundant, non-toxic crystals in NIST JARVIS-DFT should be
-computed next to find excellent solar absorbers fastest? Six agents in one
-Omnigent session (Compiler, Scout, Planner, Experimenter, Skeptic, Scribe) run
-the AutoResearch loop in [`lab/solar`](lab/solar). Models: Claude Opus 5.5 for
-planning, experiments, the Skeptic and the report; Claude Haiku 4.5 for the
-Scout's quick searches. See [`docs/decisions.md`](docs/decisions.md).
+**Phase 2, the real lab: first run complete** (October 3, 2026; see
+[`docs/Artemis_Phase2_Results.docx`](docs/Artemis_Phase2_Results.docx)). On the
+held-out test, run once, the agents' method found all 4 excellent absorbers in
+8 expensive calculations; the textbook rule needed 20 and random order about 344.
+A later robustness check of a rebuilt copy, over 20 random pools, beat the
+textbook rule in 20 of 20 and the corrected-gap rule in 19 of 20. Flagship
+question: which earth-abundant crystals in NIST JARVIS-DFT (Cd, Hg, Pb, Tl, As
+and radioactive elements excluded) should be computed next to find excellent
+solar absorbers fastest? Six agents in one Omnigent session (Compiler, Scout,
+Planner, Experimenter, Skeptic, Scribe) run the AutoResearch loop in
+[`lab/solar`](lab/solar). Models: Claude Opus 5.5 for planning, experiments,
+the Skeptic and the report; Claude Haiku 4.5 for the Scout's quick searches.
+See [`docs/decisions.md`](docs/decisions.md).
+
+**Phase 3, the public website: live** (October 3, 2026;
+https://artemis-ten-blond.vercel.app). Light mode, a four-item menu (Results,
+Method, About and a "Start an investigation" button),
+SEO and GEO metadata, and live runs whose reports are saved in Neon Postgres
+and published on the Results page. See
+[`docs/Artemis_Phase3_Website.docx`](docs/Artemis_Phase3_Website.docx).
+
+## Phase 3: the website
+
+```
+site/templates, site/pages   Jinja2 page sources
+site/assets                  CSS and JavaScript (menu, chart, live lab, results)
+site/src/lattice.js          the Three.js crystal, bundled to public/assets/lattice.js
+scripts/build_site.py        builds public/ (pages, sitemap, robots, llms.txt, OG images)
+scripts/test_site.py         Playwright test of every page, link, button and a full run
+public/                      the generated site that Vercel serves (committed)
+app.py                       the API: /api/runs, /api/results, /api/cron/sync, /api/status
+artemis_core/store.py        saved runs in Neon Postgres (schema artemis)
+```
+
+Rebuild the site after changing a page or the results:
+
+```
+python scripts/build_site.py
+```
+
+**Moving to your own domain.** Add the domain to the `artemis` project in
+Vercel (Settings, Domains) and follow the DNS instructions Vercel shows. Then
+rebuild with the new address so canonical links, the sitemap and llms.txt point
+to it, and push:
+
+```
+python scripts/build_site.py --site-url https://your-domain.com
+git add -A
+git commit -m "Point the site at its own domain"
+git push
+```
+
+**Environment variables in Vercel** (Settings, Environment Variables, never in
+the repository): `OMNIGENT_URL`, `OMNIGENT_USERNAME`, `OMNIGENT_PASSWORD`,
+`ARTEMIS_ACCESS_CODE` and the Neon `DATABASE_URL` are required. `CRON_SECRET`
+is recommended: when set, Vercel's 15-minute cron sends it and outsiders cannot
+trigger the sync. Redeploy after changing any of them.
+
+**How results are saved.** Starting a run writes a row to `artemis.runs`. When
+the lead agent finishes, the relay saves the report and deletes the sandbox
+session; if the browser was closed, the cron job does the same within 15
+minutes. Saved runs appear on `/results` and at `/results/run?id=...`.
 
 ## Phase 2: the lab
 

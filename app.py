@@ -483,9 +483,9 @@ def end_session(session_id: str, t: str = Query(default="")) -> JSONResponse:
 # ---------------------------------------------------------------- pages
 def not_found_page() -> HTMLResponse:
     """The site's 404 page (a plain one if the file is not bundled)."""
-    page = PUBLIC / "404.html"
-    if page.exists():
-        return HTMLResponse(page.read_text(encoding="utf-8"), status_code=404)
+    for page in (ROOT / "artemis_core" / "not_found.html", PUBLIC / "404.html"):
+        if page.is_file():
+            return HTMLResponse(page.read_text(encoding="utf-8"), status_code=404)
     return HTMLResponse("<!doctype html><title>Page not found</title><h1>Page not found</h1>"
                         '<p><a href="/">Go to the Artemis home page</a></p>', status_code=404)
 
