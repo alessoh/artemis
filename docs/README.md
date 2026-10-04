@@ -6,7 +6,9 @@
 | `Artemis_Explained_Simply.docx` | Plain-language guide to the five pieces of the system and the plan |
 | `Artemis_Phase1_Runbook.docx` | Step-by-step instructions for bringing the Phase 1 lab online |
 | `Artemis_Vercel_Import_Guide.docx` | Click-by-click guide to importing this repository into Vercel |
+| `Artemis_Phase2_Results.docx` | The first lab run: findings, independent checks, the 20-pool robustness test, recommendations |
 | `Artemis_Phase2_Runbook.docx` | The Phase 2 lab: the question as an experiment, the team, what is tested, the steps you run |
+| `results/` | The lab's own report and transcript, the robustness data and the rebuilt model's shortlist |
 | `decisions.md` | Decisions made so far, each traced to the person who made it |
 
 Note: the Phase 1 runbook predates two later fixes. The setup is now one

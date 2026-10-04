@@ -13,7 +13,7 @@ learned with citations.
 on the live Vercel site starts a fresh Modal sandbox, Claude answers, and the
 reply streams back to the browser in about 20 seconds.
 
-**Phase 2, the real lab: built, waiting for its first live run.** Flagship
+**Phase 2, the real lab: first run complete** (October 3, 2026; see [`docs/Artemis_Phase2_Results.docx`](docs/Artemis_Phase2_Results.docx)). The agents' method found excellent absorbers about three times faster than the best simple rule in 20 of 20 robustness trials. Flagship
 question: which earth-abundant, non-toxic crystals in NIST JARVIS-DFT should be
 computed next to find excellent solar absorbers fastest? Six agents in one
 Omnigent session (Compiler, Scout, Planner, Experimenter, Skeptic, Scribe) run
