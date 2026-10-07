@@ -65,15 +65,17 @@ COMPLETE_MARKER = lab_runs.COMPLETE_MARKER
 STREAM_SLICE_SECONDS = 600
 SCRIPT = "python scripts/run_cvrp.py"
 
-KICKOFF = f"""Run the Artemis routing program now, from setup to final report.
+KICKOFF = f"""Run the Artemis routing program now (run 2), from setup to final report.
 
 The question: within a short, fixed time limit on one CPU core (3 seconds per
 100 customers), can this lab build a capacitated vehicle routing solver that
 gets closer to the CVRPLIB X best-known solutions than PyVRP's default
-solver, a state-of-the-art open-source library? Everything you need is in
-lab/cvrp. Read lab/cvrp/program.md first and follow it exactly: setup, the
-experiment loop with the Skeptic's review, the single final test, then the
-report.
+solver, a state-of-the-art open-source library, on small and large problems
+alike? This is run 2: it starts from run 1's kept solver, and the section
+"Run 2: where run 1 left off" in lab/cvrp/program.md explains what changed.
+Everything you need is in lab/cvrp. Read lab/cvrp/program.md first and follow
+it exactly: setup, the experiment loop with the Skeptic's review, the single
+final test, then the report.
 
 Your very last message must contain, in this order: the full text of
 runs/cvrp/report.md; the final ledger summary; the full source of

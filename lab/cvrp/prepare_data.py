@@ -56,6 +56,12 @@ SOURCE_FOLDER = "CVRP"
 # record-hunting runs).
 LOOP_MAX_CUSTOMERS = 600
 SCALE_COUNT = 8
+# Run 2 (fixed 2026-10-07 by Claude, owner Peter Alesso): run 1's practice set
+# held only problems under 600 customers, and its gain did not carry over to
+# larger ones. Four larger problems move from hunt to val, chosen to span short
+# and long routes (about 5, 8, 15 and 24 customers per route in their BKS).
+# Test and scale are unchanged, so the two runs share one held-out yardstick.
+LARGE_VAL = ("X-n655-k131", "X-n749-k98", "X-n876-k59", "X-n895-k37")
 
 
 def sha256_bytes(data: bytes) -> str:
@@ -180,6 +186,10 @@ def assign_splits(sizes: dict[str, int]) -> dict[str, str]:
     scale_positions = {int(step * i + step / 2) for i in range(SCALE_COUNT)}
     for position, name in enumerate(large):
         split[name] = "scale" if position in scale_positions else "hunt"
+    for name in LARGE_VAL:
+        if split.get(name) != "hunt":
+            raise SystemExit(f"{name} was expected in the hunt split")
+        split[name] = "val"
     return split
 
 

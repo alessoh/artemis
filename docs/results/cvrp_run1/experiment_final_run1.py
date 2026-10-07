@@ -10,11 +10,8 @@ implied at both ends). The instance is a dictionary with:
               exactly the distances the harness uses to score the routes
 The harness measures the time and CPU used; one core and time_limit seconds.
 
-Starting point for run 2: the solver run 1 kept (trial granular_20, saved as
-docs/results/cvrp_run1/experiment_final_run1.py). It is PyVRP 0.14.0 with each
-customer's granular neighbourhood cut from 50 to 20 nearest neighbours, so
-each second of search tries more moves. Run 1 found it better than PyVRP's
-default on held-out problems under 600 customers, but not on larger ones.
+Starting point: PyVRP 0.14.0 with its default settings (identical to the
+frozen lab/cvrp/reference.py baseline).
 """
 
 from __future__ import annotations

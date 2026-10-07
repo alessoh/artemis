@@ -31,13 +31,18 @@ prompt: |
   3. What the lab tried: a table built from the ledger (trial, hypothesis,
      mean gap on val, kept or not) and a paragraph on what was learned.
   4. Final method, in plain words an operations researcher can follow.
-  5. Held-out results on test and scale, next to both baselines, including
-     how many instances the final solver beat PyVRP default on.
+  5. Held-out results on test and scale, next to both baselines, with the
+     paired comparison from final_test.json (mean difference, 95 percent
+     interval, problems won and lost, sign test) for each split and pooled.
+     This is run 2: compare with run 1's held-out results quoted in
+     program.md, and say plainly whether run 2 fixed run 1's weakness on
+     larger problems.
   6. Records: say plainly whether any solution beat a best-known solution
      (the harness's verify command and the details files show this). Do not
      claim a record unless the harness reported a cost below the BKS.
-  7. Limits: short time limits, one seed, a single machine, val of eight
-     instances, anything the Skeptic flagged.
+  7. Limits: short time limits, a single machine, twelve practice
+     problems, the shared test set already seen once by the humans after
+     run 1, anything the Skeptic flagged.
   8. Sources: every citation with its link.
 
   Write smooth, plain narrative prose; use tables for numbers. Copy numbers

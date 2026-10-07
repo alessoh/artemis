@@ -2,16 +2,16 @@
   "source_repo": "https://github.com/PyVRP/Instances",
   "source_commit": "7474b068a8effa7f39448b241314b615c9271525",
   "source_note": "CVRPLIB X instances (Uchoa et al. 2017, doi:10.1016/j.ejor.2016.08.012) and best-known solutions as mirrored by PyVRP/Instances; distances rounded to the nearest integer.",
-  "built_utc": "2026-10-07T16:29:34Z",
+  "built_utc": "2026-10-07T20:27:57Z",
   "instances": 100,
   "splits": {
-    "hunt": 15,
+    "hunt": 11,
     "train": 52,
     "test": 17,
-    "val": 8,
+    "val": 12,
     "scale": 8
   },
-  "sha256": "4ffd5d6fe45d4822222e45f8e84f4d8762463306066ebaf9cea1ef5cc5ac7e41",
+  "sha256": "e9543acc2aa0c6e98dde78cd77260059068e2e8c75c121de9ddae26faf8e500c",
   "checks": {
     "bks_recomputed_exactly": 100
   },
@@ -19,16 +19,12 @@
     "hunt": [
       "X-n613-k62",
       "X-n641-k35",
-      "X-n655-k131",
       "X-n685-k75",
       "X-n701-k44",
       "X-n733-k159",
-      "X-n749-k98",
       "X-n783-k48",
       "X-n819-k171",
       "X-n837-k142",
-      "X-n876-k59",
-      "X-n895-k37",
       "X-n936-k151",
       "X-n957-k87",
       "X-n1001-k43"
@@ -124,7 +120,11 @@
       "X-n303-k21",
       "X-n359-k29",
       "X-n449-k29",
-      "X-n561-k42"
+      "X-n561-k42",
+      "X-n655-k131",
+      "X-n749-k98",
+      "X-n876-k59",
+      "X-n895-k37"
     ]
   },
   "source_file_sha256": {

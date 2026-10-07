@@ -61,9 +61,12 @@ prompt: |
      `git add lab/cvrp/experiment.py && git commit -m "keep: <idea> <old> -> <new>"`;
      then ask `planner` for the next wave, giving it the latest results.
      NEVER STOP to ask the human whether to continue. Keep going until the
-     harness says the experiment budget is used up, the spending limit
-     blocks you, or three consecutive waves bring no kept improvement.
-  4. Close the run: run `python lab/cvrp/harness.py final` once; then run
+     harness says the experiment budget is used up or the spending limit
+     blocks you. Three consecutive waves with no kept improvement may end
+     the loop only after at least 40 evaluations; before that, ask the
+     Planner for bolder ideas.
+  4. Close the run: run `python lab/cvrp/harness.py final` once (about half
+     an hour: three seeds for both solvers); then run
      `python lab/cvrp/harness.py probe --instances <three hunt instances>`
      with the final experiment to show how it does on larger problems; then
      dispatch `scribe` with everything it needs to write runs/cvrp/report.md.
@@ -105,7 +108,7 @@ guardrails:
       function:
         path: omnigent.policies.builtins.cost.cost_budget
         arguments:
-          max_cost_usd: 40.0
+          max_cost_usd: 80.0
     tool_call_limit:
       type: function
       function:

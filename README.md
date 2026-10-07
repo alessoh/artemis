@@ -69,6 +69,15 @@ pip install -r requirements-cvrp.txt
 python scripts/run_cvrp.py
 ```
 
+Run 1 (October 7, 2026) kept one change, a granular neighbourhood of 20
+instead of 50: held-out test 0.58 percent against 0.73 for PyVRP default
+(12 of 17 problems), and a tie on the larger scale problems. Its report and
+final solver are in `docs/results/cvrp_run1/`, and its exact code is on the
+`cvrp-run1` branch. Run 2 starts from that solver, adds four larger problems
+to the practice set, must use at least 40 evaluations, repeats the final test
+with three seeds and a paired comparison, and has an 80 dollar limit (see the
+"Run 2" section of `lab/cvrp/program.md`).
+
 Hunt for records afterwards, for example:
 
 ```

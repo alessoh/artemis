@@ -32,6 +32,9 @@ Time limit:     3.0 seconds per 100 customers (e.g. 13.44 s for 448 customers),
                 plus 0.5 s of the runner reporting ready.
 Primary metric: mean gap to the best-known solution over the val instances,
                 gap = 100 * (cost - BKS) / BKS, seed 0. Lower is better.
+Final test:     test and scale, seeds 0, 1 and 2, for the experiment and the
+                frozen reference; reported with a paired comparison (mean
+                difference, 95 percent bootstrap interval, sign test).
 Also reported:  median and worst gap, and on how many instances the
                 experiment beat the frozen PyVRP reference (same seed).
 Splits:         see prepare_data.py. "train" and "hunt" may be probed freely;
@@ -111,6 +114,8 @@ LOCK = RUNS_DIR / "solver.lock"
 SECONDS_PER_100_CUSTOMERS = 3.0
 SEED = 0
 RECHECK_SEEDS = (1, 2)
+FINAL_SEEDS = (0, 1, 2)          # run 2: the final test repeats every held-out problem 3 times
+BOOTSTRAP_DRAWS = 10_000
 
 # ---- rules of the game ----------------------------------------------------
 EXPERIMENT_BUDGET = 60           # val evaluations per ledger (one lab run)
@@ -816,6 +821,47 @@ def cmd_recheck(args: argparse.Namespace) -> int:
     return 0
 
 
+def paired_stats(experiment: list[dict], reference: list[dict]) -> dict:
+    """Paired comparison of the experiment with the reference on the same problems and seeds.
+
+    For each problem the gap is averaged over the seeds, then d = experiment gap
+    minus reference gap (percentage points; negative means the experiment is
+    better). Reported: mean d with a 95 percent bootstrap interval over problems
+    (fixed random seed, so the numbers are reproducible), problems won and lost,
+    an exact two-sided sign test on those wins and losses, and the head-to-head
+    count over every (problem, seed) pair.
+    """
+    ref = {(r["instance"], r["seed"]): r for r in reference}
+    per_problem: dict[str, list[float]] = {}
+    pair_wins = pair_losses = pair_ties = 0
+    for r in experiment:
+        other = ref.get((r["instance"], r["seed"]))
+        if other is None:
+            continue
+        per_problem.setdefault(r["instance"], []).append(r["gap_pct"] - other["gap_pct"])
+        pair_wins += r["cost"] < other["cost"]
+        pair_losses += r["cost"] > other["cost"]
+        pair_ties += r["cost"] == other["cost"]
+    diffs = np.array([statistics.fmean(v) for v in per_problem.values()])
+    if not len(diffs):
+        raise HarnessError("no paired results to compare")
+    rng = np.random.default_rng(0)
+    boots = rng.choice(diffs, size=(BOOTSTRAP_DRAWS, len(diffs)), replace=True).mean(axis=1)
+    wins, losses = int((diffs < 0).sum()), int((diffs > 0).sum())
+    n = wins + losses
+    tail = sum(math.comb(n, k) for k in range(0, min(wins, losses) + 1)) / 2 ** n if n else 1.0
+    return {
+        "problems": len(diffs),
+        "seeds": sorted({r["seed"] for r in experiment}),
+        "mean_difference_pct_points": round(float(diffs.mean()), 4),
+        "ci95_low": round(float(np.percentile(boots, 2.5)), 4),
+        "ci95_high": round(float(np.percentile(boots, 97.5)), 4),
+        "problems_won": wins, "problems_lost": losses, "problems_tied": len(diffs) - n,
+        "sign_test_p_two_sided": round(min(1.0, 2 * tail), 5),
+        "pairs_won": pair_wins, "pairs_lost": pair_losses, "pairs_tied": pair_ties,
+    }
+
+
 def cmd_final(args: argparse.Namespace) -> int:
     path = Path(args.experiment).resolve()
     if path != DEFAULT_EXPERIMENT.resolve():
@@ -833,14 +879,22 @@ def cmd_final(args: argparse.Namespace) -> int:
     result: dict[str, object] = {"fingerprint": fingerprint(),
                                  "experiment_sha256": sha256_file(path),
                                  "definitions": {"seconds_per_100_customers": SECONDS_PER_100_CUSTOMERS,
-                                                 "seed": SEED}}
+                                                 "seeds": list(FINAL_SEEDS)}}
+    seeds = list(FINAL_SEEDS)
+    pooled_exp: list[dict] = []
+    pooled_ref: list[dict] = []
     for split in ("test", "scale"):
-        print(f"Reference (PyVRP default) on {split}:")
-        ref_row, _ = evaluate(REFERENCE, split, "final_reference", [SEED], f"final reference on {split}")
-        print(f"Experiment on {split}:")
-        exp_row, _ = evaluate(path, split, "final", [SEED], args.note or f"final on {split}")
+        print(f"Reference (PyVRP default) on {split}, seeds {seeds}:")
+        ref_row, ref_results = evaluate(REFERENCE, split, "final_reference", seeds,
+                                        f"final reference on {split}")
+        print(f"Experiment on {split}, seeds {seeds}:")
+        exp_row, exp_results = evaluate(path, split, "final", seeds, args.note or f"final on {split}")
         savings, _ = savings_on(split)
-        result[split] = {"experiment": exp_row, "pyvrp_default": ref_row, "savings": savings}
+        result[split] = {"experiment": exp_row, "pyvrp_default": ref_row, "savings": savings,
+                         "paired_vs_pyvrp_default": paired_stats(exp_results, ref_results)}
+        pooled_exp += exp_results
+        pooled_ref += ref_results
+    result["test_and_scale_pooled"] = {"paired_vs_pyvrp_default": paired_stats(pooled_exp, pooled_ref)}
     FINAL_RESULT.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     print("FINAL " + json.dumps(result))
     return 0

@@ -31,10 +31,11 @@ prompt: |
      that reaches outside the solve() arguments, recognises particular
      instances (by size, capacity, coordinates or any fingerprint), embeds
      routes or tables computed elsewhere, uses more than one core, or
-     tunes constants to the eight val instances without an algorithmic
+     tunes constants to the twelve val instances without an algorithmic
      reason.
   3. Judge generalisation: probe the trial and the current best on two or
-     three train instances of different sizes
+     three train or hunt instances of different sizes, including at least
+     one hunt instance with 600 or more customers
      (`python lab/cvrp/harness.py probe --experiment <file> --instances ...`).
      A gain that appears only on val is suspect.
   4. Judge simplicity against program.md: is the gain worth the added code?
