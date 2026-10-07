@@ -34,6 +34,47 @@ SEO and GEO metadata, and live runs whose reports are saved in Neon Postgres
 and published on the Results page. See
 [`docs/Artemis_Phase3_Website.docx`](docs/Artemis_Phase3_Website.docx).
 
+## Routing program (branch `cvrp-lab`)
+
+The second Artemis program asks whether the lab can build a capacitated
+vehicle routing (CVRP) solver that, with the same short time limit on one CPU
+core (3 seconds per 100 customers), gets closer to the CVRPLIB X best-known
+solutions than PyVRP's default solver. Records beyond that are attempted
+separately with long runs.
+
+```
+lab/cvrp/program.md       the human's instructions (read by every agent)
+lab/cvrp/harness.py       frozen: checks every route, CVRPLIB rounding, time and CPU limits, ledger
+lab/cvrp/reference.py     frozen: PyVRP 0.14.0 default, the baseline
+lab/cvrp/experiment.py    the one solver the agents improve: solve(instance, time_limit, seed)
+lab/cvrp/prepare_data.py  built the snapshot from PyVRP/Instances at a pinned commit
+lab/cvrp/hunt.py          long record-hunting runs (Modal or this computer), checked by the harness
+lab/agents/cvrp_lab/      the six agents
+scripts/run_cvrp.py       check, launch, watch, collect, stop, rebuild
+```
+
+The snapshot holds the 100 X instances and their best-known costs (not their
+routes). Every published cost was re-computed exactly by the harness's own
+checker. Splits: train 52, val 8, test 17 (fewer than 600 customers); scale 8
+and hunt 15 (600 or more). Measured before any run: savings rule 6.85 percent
+mean gap on val, PyVRP default 1.30 percent (seed 0), seed-to-seed standard
+deviation 0.085 percentage points.
+
+Run it from the artemis folder:
+
+```
+git fetch
+git checkout cvrp-lab
+pip install -r requirements-cvrp.txt
+python scripts/run_cvrp.py
+```
+
+Hunt for records afterwards, for example:
+
+```
+modal run lab/cvrp/hunt.py --instance X-n801-k40 --minutes 60 --seeds 8
+```
+
 ## Phase 3: the website
 
 ```
