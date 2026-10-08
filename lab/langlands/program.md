@@ -55,7 +55,11 @@ the archimedean sign inside the murmuration pattern over a real quadratic
 field, using finite signs computed from the bad primes alone, and a measure
 of how closely the pattern over Q(sqrt 5) matches the one over Q when both
 are drawn against p / N. Whether murmurations over number fields have been
-studied before is not known to the humans; the Scout must check.
+studied before is not known to the humans; the Scout must check. A quick
+search before the run found "Variations on murmurations" (arXiv:2505.01093),
+which works over Q and, among other things, weights murmurations by products
+of local root numbers over sets of places; it is related to both parts and
+the Scout should report what it actually shows.
 
 Part B is open. The humans know of no published answer. An exploratory look
 at the training conductors only (N below 300,000) found that, among classes
