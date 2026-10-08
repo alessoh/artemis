@@ -34,6 +34,20 @@ SEO and GEO metadata, and live runs whose reports are saved in Neon Postgres
 and published on the Results page. See
 [`docs/Artemis_Phase3_Website.docx`](docs/Artemis_Phase3_Website.docx).
 
+## The Langlands program (branch `langlands-lab`)
+
+This program tests research direction R1 of Peter Alesso's memo "Euler's identity and the Langlands program". Part A measures whether murmurations of elliptic curves follow the true root number, so that over Q(sqrt 5), with two real places, they line up with the product of the finite local signs, the reverse of the rule over Q. Part B is an AutoResearch loop asking whether, within one conductor, the local root numbers of rank 2 curves over Q differ from those of rank 0 curves. Everything lives in `lab/langlands/` (frozen harness, runner and data; `experiment.py` is the only file the lab edits; `program.md` is the instruction to the agents), with the agents in `lab/agents/langlands_lab/`.
+
+To run it on Windows, from the artemis folder:
+
+```
+git checkout langlands-lab
+pip install -r requirements-langlands.txt
+python scripts/run_langlands.py
+```
+
+The script first checks the harness on your computer, then starts the six-agent lab in a Modal sandbox and shows its progress. The data were built once with `python lab/langlands/prepare_data.py` (needs `cypari2`) and are committed with their SHA-256 in `lab/langlands/data/manifest.json`.
+
 ## Phase 3: the website
 
 ```

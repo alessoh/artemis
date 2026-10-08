@@ -1,0 +1,6 @@
+# The Artemis Langlands lab (lab/langlands). The lab itself needs only these:
+numpy>=1.26
+scipy>=1.11
+scikit-learn>=1.4
+# Only the human who rebuilds the data snapshot (prepare_data.py) also needs PARI:
+# cypari2>=2.2

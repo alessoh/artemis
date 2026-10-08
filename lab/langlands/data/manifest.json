@@ -1,0 +1,38 @@
+{
+  "built_utc": "2026-10-08T19:09:30Z",
+  "sources": {
+    "ecdata": {
+      "repo": "https://github.com/JohnCremona/ecdata",
+      "commit": "25cec5ecfec8b9f016eb1631ac633194c2bed39f",
+      "note": "J. E. Cremona, elliptic curve data over Q, conductors below 500,000"
+    },
+    "lmfdb_q_sqrt5": {
+      "file": "raw/lmfdb_ec_nf_2.2.5.1_20261008.txt",
+      "sha256": "eba9ad4210af560e07f0af8dccbafcedc260f8cf62580e49f8d54868e8c522d2",
+      "note": "LMFDB elliptic curves over 2.2.5.1, downloaded 2026-10-08 (query field_label = 2.2.5.1, 9721 curves)"
+    },
+    "pari": "(2, 17, 2)"
+  },
+  "counts": {
+    "q_classes_below_500000": 2164260,
+    "rank_signs": {
+      "0": 790258,
+      "2": 279056
+    },
+    "murm_q": {
+      "classes": 17314,
+      "root_number_checks_passed": 17314
+    },
+    "murm_k": {
+      "classes": 4605,
+      "rank_parity_checks_passed": 4602,
+      "semistable_classes": 3333,
+      "semistable_sign_checks_passed": 3333
+    }
+  },
+  "sha256": {
+    "rank_signs.tsv.gz": "87b431f06d58eb2afd0b3b09b900a1cc5bfb614afc36b27f6f574673865df19a",
+    "murm_q.jsonl.gz": "72215d00e9544ed84804f6e9d5f9a7d0d4fc0c27a30db260562d0d2aafdf04fe",
+    "murm_k.jsonl.gz": "3320139709881e80d86f2f26b5f27d9557793e58d5d84a49ebafdbc90e01af6d"
+  }
+}

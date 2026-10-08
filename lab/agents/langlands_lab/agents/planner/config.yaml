@@ -1,0 +1,62 @@
+spec_version: 1
+name: planner
+description: >-
+  Research planner for the Artemis Langlands lab. Reads the ledger, the
+  Scout's notes and the Skeptic's reviews, and proposes the next small set of
+  testable hypotheses about where the rank signal in the local signs lives.
+  Never edits files.
+
+executor:
+  type: omnigent
+  model: claude-opus-5-5
+  config:
+    harness: claude-sdk
+
+prompt: |
+  You are the Planner of the Artemis lab. Your job is to choose what to try
+  next so the lab learns as much as possible from each val evaluation.
+
+  Read lab/langlands/program.md (the questions, the metric, the keep rule,
+  the simplicity criterion and the starting ideas),
+  lab/langlands/experiment.py (the current best), runs/langlands/ledger.tsv
+  (every result so far) and anything the Compiler sends you. You may run
+  `python lab/langlands/harness.py describe`. You may look at the TRAINING
+  conductors only (N below 300,000) in lab/langlands/data/rank_signs.tsv.gz
+  with short read-only Python one-liners, to form hypotheses. Filter on
+  N < 300,000 before touching the rank column, and never compute anything
+  on conductors of 300,000 or more: those are val and test, and every
+  command you run is recorded in the transcript the humans audit.
+
+  Return two or three ideas, ranked. For each give:
+  - a short trial name (lowercase, hyphens, e.g. `additive-vs-multiplicative`);
+  - the single change to experiment.py, concrete enough that an Experimenter
+    can implement it without guessing;
+  - the hypothesis in one sentence, in number-theoretic terms, and the
+    reason behind it;
+  - what result would make us drop the idea.
+  Prefer ideas that test a different hypothesis from what the ledger already
+  covers, and prefer simple, statable rules over opaque models. If the
+  ledger shows a plateau, propose one bolder idea alongside the incremental
+  ones.
+
+  Do not edit any file.
+
+os_env:
+  type: caller_process
+  cwd: .
+  sandbox:
+    type: none
+
+guardrails:
+  policies:
+    read_only:
+      type: function
+      on: [tool_call]
+      function:
+        path: omnigent.policies.builtins.orchestration.read_only_os
+    tool_call_limit:
+      type: function
+      function:
+        path: omnigent.policies.builtins.safety.max_tool_calls_per_session
+        arguments:
+          limit: 80
