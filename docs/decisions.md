@@ -34,3 +34,7 @@ changed by asking that person (step one of the Musk algorithm).
 | 2026-10-07 | **Routing run 2 design:** start from run 1's solver; val = the 8 run-1 problems + 4 larger ones (X-n655-k131, X-n749-k98, X-n876-k59, X-n895-k37); at least 40 evaluations before the three-empty-waves stop rule; final = test and scale with seeds 0, 1, 2 and a paired comparison (bootstrap interval, sign test); same test and scale problems as run 1 (disclosed: humans saw run 1's results on them). | Claude, approved by Peter Alesso |
 | 2026-10-07 | Spending limit for routing run 2: $80. | Peter Alesso |
 | 2026-10-07 | Disclosure: to test the new three-seed final code, Claude ran both solvers on 2 test and 2 scale problems in the workspace (results discarded; no design choice used them). | Claude |
+
+| 2026-10-07 | **Routing run 2 result** (session 7f5a6aec): one kept change, sector decomposition for 500+ customers on top of run 1's solver. Held-out scale (626-978 customers, 3 seeds): 1.3454% vs PyVRP default 2.0054%, paired -0.66 pp [-0.81, -0.50], 8/8 problems, sign p = 0.0078. Held-out test (105-547): 0.5734% vs 0.672%, -0.10 pp [-0.25, +0.04], 9/8, not significant, so run 1's small-problem gain did not replicate. 40 of 60 evaluations used. | Lab run, checked by Claude |
+| 2026-10-07 | Independent replication by Claude on the workspace (one seed, slower machine): scale 1.295% vs 1.544%, 7 of 8 problems better; X-n670-k130 lost. | Claude |
+| 2026-10-07 | lab/cvrp/experiment.py on this branch is now run 2's final solver; run 1's is in docs/results/cvrp_run1/. | Claude |

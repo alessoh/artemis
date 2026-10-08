@@ -78,6 +78,15 @@ to the practice set, must use at least 40 evaluations, repeats the final test
 with three seeds and a paired comparison, and has an 80 dollar limit (see the
 "Run 2" section of `lab/cvrp/program.md`).
 
+Run 2 kept one more change, a decomposition for problems of 500 or more
+customers (a short whole-problem search, then three rounds of re-solving
+angular sectors of routes). On the 8 held-out larger problems, with three
+seeds each, it was 0.66 points closer to the best-known solutions than PyVRP
+default (1.35 against 2.01 percent), better on all 8 (sign test p = 0.008).
+On the 17 smaller test problems the difference was not significant, so run 1's
+small-problem gain did not hold up under three seeds. Report, final solver and
+an independent replication are in `docs/results/cvrp_run2/`.
+
 Hunt for records afterwards, for example:
 
 ```
