@@ -1,0 +1,194 @@
+{
+  "fingerprint": {
+    "harness": "f5cf8570c3c5f371a60856d274f31509eb0ad89d05b9ecb9430df26ac3273a9d",
+    "runner": "e03f4619986918746f880dc97e8830f8f9fb0296b21a31eec8e26cc4fe9dd4b1",
+    "data": "42345fcb4d935152950433bd4c899adbed94e4979a0b3a0d418423a476a696c8"
+  },
+  "experiment_sha256": "fbe1a6557a673fbeb154f17e778d16bc2b4d71c00215792c66322f270b0b975e",
+  "definitions": {
+    "alpha_one_sided": 0.01,
+    "seed": 0,
+    "bootstrap_draws": 2000,
+    "permutations": 2000,
+    "test_conductors": [
+      400000,
+      500000
+    ]
+  },
+  "part_A": {
+    "bins_x_equals_p_over_N": [
+      "[0.0, 0.1)",
+      "[0.1, 0.2)",
+      "[0.2, 0.3)",
+      "[0.3, 0.4)",
+      "[0.4, 0.5)",
+      "[0.5, 0.6)",
+      "[0.6, 0.7)",
+      "[0.7, 0.8)",
+      "[0.8, 0.9)",
+      "[0.9, 1.0]"
+    ],
+    "C1_Q": {
+      "conductor_range": [
+        1000,
+        5000
+      ],
+      "classes": 14851,
+      "conductors": 2730,
+      "M_Q": [
+        0.1087,
+        -0.0445,
+        -0.0427,
+        0.0518,
+        0.0778,
+        0.0536,
+        0.0123,
+        -0.0333,
+        -0.0546,
+        -0.0609
+      ],
+      "P_plus": [
+        0.0892,
+        -0.0588,
+        -0.0495,
+        0.0394,
+        0.0696,
+        0.049,
+        0.006,
+        -0.0366,
+        -0.0645,
+        -0.0544
+      ],
+      "P_minus": [
+        -0.1267,
+        0.0312,
+        0.0363,
+        -0.0632,
+        -0.0854,
+        -0.0578,
+        -0.0182,
+        0.0303,
+        0.0456,
+        0.0669
+      ],
+      "mirror_corr_P_plus_P_minus": -0.9824,
+      "mirror_ci95": [
+        -0.9861,
+        -0.9771
+      ],
+      "M_Q_sign_changes": 3,
+      "M_Q_first_bin_ci95": [
+        0.1065,
+        0.1109
+      ],
+      "reproduced": true
+    },
+    "C2_Q_sqrt5": {
+      "norm_range": [
+        1000,
+        5000
+      ],
+      "semistable_classes": 2816,
+      "semistable_norms": 451,
+      "all_classes": 3973,
+      "all_norms": 538,
+      "F_ss": [
+        0.0677,
+        -0.037,
+        0.0084,
+        0.0395,
+        0.0496,
+        0.0593,
+        0.0596,
+        0.0515,
+        0.0469,
+        0.0384
+      ],
+      "F_all": [
+        0.0659,
+        -0.0401,
+        0.0065,
+        0.0368,
+        0.0503,
+        0.0609,
+        0.0631,
+        0.0508,
+        0.0487,
+        0.0359
+      ],
+      "rho_ss": 0.5313,
+      "rho_ss_ci95": [
+        0.4605,
+        0.5944
+      ],
+      "rho_all": 0.519,
+      "rho_all_ci95": [
+        0.463,
+        0.5684
+      ],
+      "sensitivity_semistable_without_rational_models": {
+        "classes": 2779,
+        "F": [
+          0.0679,
+          -0.0372,
+          0.0087,
+          0.0398,
+          0.0501,
+          0.0596,
+          0.0601,
+          0.0515,
+          0.0478,
+          0.039
+        ],
+        "rho": 0.5273,
+        "rho_ci95": [
+          0.4609,
+          0.5869
+        ]
+      },
+      "F_ss_first_bin_ci95": [
+        0.0622,
+        0.0729
+      ],
+      "verdict": "consistent with the predicted flip"
+    }
+  },
+  "part_B": {
+    "test_classes": 209944,
+    "test_rank2": 59548,
+    "H_B1_simple_rule": {
+      "auc_within": 0.521744,
+      "ci95_low": 0.516516,
+      "ci95_high": 0.52729,
+      "z": 8.591,
+      "p_one_sided": 4.32e-18,
+      "pairs": 775454,
+      "conductors": 18316,
+      "permutation_p": 0.0005,
+      "supported": true
+    },
+    "H_B2_experiment": {
+      "auc_within": 0.542611,
+      "ci95_low": 0.535592,
+      "ci95_high": 0.549993,
+      "z": 15.114,
+      "p_one_sided": 6.57e-52,
+      "pairs": 775454,
+      "conductors": 18316,
+      "permutation_p": 0.0005,
+      "supported": true
+    },
+    "experiment_minus_simple_rule": {
+      "delta": 0.020866,
+      "ci95_low": 0.014059,
+      "ci95_high": 0.027839
+    },
+    "positive_control_nagao_ap25": {
+      "auc_within": 0.963781,
+      "ci95_low": 0.962087,
+      "ci95_high": 0.965424,
+      "z": 160.017,
+      "pairs": 775454
+    }
+  }
+}
