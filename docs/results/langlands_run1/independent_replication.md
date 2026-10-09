@@ -26,3 +26,9 @@ The experiment's internal gate did not fire on the final fit (its test scores di
 
 These rules were formed on train and val, so these numbers are out-of-sample in practice, but they
 were not named in advance and should be confirmed on fresh conductors before being stated as results.
+
+Paired comparisons on test (post hoc, 2,000 bootstrap draws over conductors):
+r minus the pre-registered simple rule +0.00928 [0.003497, 0.015005];
+Rohrlich integer rule minus r +0.003541 [-0.000469, 0.00757];
+D alone minus the simple rule -0.00387 [-0.010907, 0.003288].
+The size rule's gain is clear; the Rohrlich-deviation reading is not established by these checks.
