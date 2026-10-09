@@ -1,6 +1,8 @@
 # Independent replication of the Langlands run (Claude, 2026-10-08)
 
-Session 5604bfb2f87a405f8752a5502414125c. The lab's commits stayed in its sandbox, so the promoted
+Lab session 5604bfb2f87a405f8752a5502414125c. The replication, the post hoc AUCs and the paired
+comparisons were computed by the Claude session that built Artemis (it took no part in the run),
+with the script `posthoc_checks.py` in this folder for the post hoc numbers. The lab's commits stayed in its sandbox, so the promoted
 experiment was rebuilt from the code block in the lab's final message.
 
 - Rebuilt `experiment.py` SHA-256: fbe1a6557a673fbeb154f17e778d16bc2b4d71c00215792c66322f270b0b975e,
