@@ -1,0 +1,3 @@
+# Frozen lab data must be byte-identical on every computer (no line-ending conversion)
+lab/unccd_alpha/data/** -text
+*.npz binary

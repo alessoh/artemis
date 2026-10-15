@@ -114,6 +114,15 @@ def snapshot_ok() -> bool:
                                 for name, digest in hashes.items())
 
 
+def snapshot_problems() -> list[str]:
+    """The data files that are missing or differ from the manifest."""
+    if not MANIFEST.exists():
+        return ["manifest.json missing"]
+    hashes = json.loads(MANIFEST.read_text(encoding="utf-8")).get("sha256", {})
+    return [name for name, digest in hashes.items()
+            if not (LAB / "data" / name).exists() or sha256_file(LAB / "data" / name) != digest]
+
+
 def run(command: list[str], env: dict[str, str] | None = None, capture: bool = False) -> subprocess.CompletedProcess:
     """Run a command from the repository root."""
     return subprocess.run(command, cwd=REPO_ROOT, env=env, text=True,
@@ -133,7 +142,9 @@ def cmd_check(_: argparse.Namespace | None = None) -> int:
     except ImportError:
         return stop("NumPy, SciPy or scikit-learn is missing. Run: pip install -r requirements-unccd-alpha.txt")
     if not snapshot_ok():
-        return stop("The data snapshot is missing or altered. Run: git pull")
+        bad = snapshot_problems()
+        return stop("The data snapshot is missing or altered (" + ", ".join(bad) + "). Run: git pull. If it "
+                    "persists on Windows, delete those files and run: git checkout -- lab/unccd_alpha/data")
     local_runs = RUNS / "unccd_alpha_local_check"
     if local_runs.exists():
         shutil.rmtree(local_runs)
