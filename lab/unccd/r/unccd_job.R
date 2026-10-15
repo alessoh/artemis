@@ -42,7 +42,7 @@ source(file.path(vendor, "methods/clustering/UN-CCDs.R"))
 # source text matches one of the patterns in `skip`, and replacing expressions
 # matching names(replace) with the given code.
 eval_filtered <- function(path, env, skip = character(0), replace = list()) {
-  exprs <- parse(path, keep.source = TRUE)
+  exprs <- parse(path, keep.source = TRUE, encoding = "UTF-8")
   srcs <- vapply(attr(exprs, "srcref"), function(s) paste(as.character(s), collapse = "\n"), "")
   for (i in seq_along(exprs)) {
     txt <- srcs[i]

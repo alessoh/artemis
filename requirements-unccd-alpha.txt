@@ -1,0 +1,4 @@
+# The Artemis UN-CCD alpha lab (lab/unccd_alpha). The lab itself needs only these:
+numpy>=1.26
+scipy>=1.11
+scikit-learn>=1.4

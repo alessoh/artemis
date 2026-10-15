@@ -28,3 +28,5 @@ site/node_modules/
 # Project 1: authors code is cloned here, not committed (no licence file)
 lab/unccd/vendor/
 lab/unccd/work/
+lab/unccd_alpha/work/
+runs/unccd_alpha/
