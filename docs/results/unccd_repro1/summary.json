@@ -1,0 +1,1904 @@
+{
+  "real_unccd": {
+    "driver": {
+      "D31": {
+        "published": {
+          "ari": 0.799,
+          "sil": 0.474,
+          "k": 31
+        },
+        "original_order": {
+          "ari": 0.745745215798567,
+          "sil": 0.440278419901699,
+          "k": 30,
+          "seconds": 1096.685,
+          "n": 3100,
+          "d": 2
+        },
+        "permutations": {
+          "count": 5,
+          "ari_mean": 0.7435217579294037,
+          "ari_ci95": [
+            0.7408101403184038,
+            0.7462333755404034
+          ],
+          "ari_min": 0.739576371448363,
+          "ari_max": 0.746965615153158,
+          "ari_q05_q95": [
+            0.739576371448363,
+            0.7467215352822397
+          ],
+          "sil_mean": 0.44557833436807287,
+          "k_counts": {
+            "29": 2,
+            "30": 3
+          },
+          "share_k_equal_published": 0.0,
+          "share_ari_within_0.01_of_published": 0.0,
+          "distinct_label_hashes": 5
+        }
+      },
+      "R15": {
+        "published": {
+          "ari": 0.975,
+          "sil": 0.742,
+          "k": 15
+        },
+        "original_order": {
+          "ari": 0.974966169262289,
+          "sil": 0.742083133859453,
+          "k": 15,
+          "seconds": 5.616,
+          "n": 600,
+          "d": 2
+        },
+        "permutations": {
+          "count": 100,
+          "ari_mean": 0.9749661692622891,
+          "ari_ci95": [
+            0.9749661692622891,
+            0.9749661692622891
+          ],
+          "ari_min": 0.974966169262289,
+          "ari_max": 0.974966169262289,
+          "ari_q05_q95": [
+            0.974966169262289,
+            0.974966169262289
+          ],
+          "sil_mean": 0.742083133859453,
+          "k_counts": {
+            "15": 100
+          },
+          "share_k_equal_published": 1.0,
+          "share_ari_within_0.01_of_published": 1.0,
+          "distinct_label_hashes": 100
+        }
+      },
+      "asymmetric": {
+        "published": {
+          "ari": 0.736,
+          "sil": 0.606,
+          "k": 4
+        },
+        "original_order": {
+          "ari": 0.739491700250971,
+          "sil": 0.60574389433255,
+          "k": 4,
+          "seconds": 31.147,
+          "n": 1000,
+          "d": 2
+        },
+        "permutations": {
+          "count": 100,
+          "ari_mean": 0.7394917002509708,
+          "ari_ci95": [
+            0.7394917002509708,
+            0.7394917002509708
+          ],
+          "ari_min": 0.739491700250971,
+          "ari_max": 0.739491700250971,
+          "ari_q05_q95": [
+            0.739491700250971,
+            0.739491700250971
+          ],
+          "sil_mean": 0.6057438943325498,
+          "k_counts": {
+            "4": 100
+          },
+          "share_k_equal_published": 1.0,
+          "share_ari_within_0.01_of_published": 1.0,
+          "distinct_label_hashes": 100
+        }
+      },
+      "iris": {
+        "published": {
+          "ari": 0.599,
+          "sil": 0.445,
+          "k": 3
+        },
+        "original_order": {
+          "ari": 0.599479330478929,
+          "sil": 0.444897873541922,
+          "k": 3,
+          "seconds": 0.396,
+          "n": 147,
+          "d": 4
+        },
+        "permutations": {
+          "count": 100,
+          "ari_mean": 0.5994793304789291,
+          "ari_ci95": [
+            0.5994793304789291,
+            0.5994793304789291
+          ],
+          "ari_min": 0.599479330478929,
+          "ari_max": 0.599479330478929,
+          "ari_q05_q95": [
+            0.599479330478929,
+            0.599479330478929
+          ],
+          "sil_mean": 0.444897873541922,
+          "k_counts": {
+            "3": 100
+          },
+          "share_k_equal_published": 1.0,
+          "share_ari_within_0.01_of_published": 1.0,
+          "distinct_label_hashes": 98
+        }
+      },
+      "seeds": {
+        "published": {
+          "ari": 0.509,
+          "sil": 0.467,
+          "k": 2
+        },
+        "original_order": {
+          "ari": 0.508680758005175,
+          "sil": 0.466990369150895,
+          "k": 2,
+          "seconds": 3.725,
+          "n": 210,
+          "d": 7
+        },
+        "permutations": {
+          "count": 100,
+          "ari_mean": 0.5651126578737553,
+          "ari_ci95": [
+            0.5426574350267065,
+            0.5881366663493068
+          ],
+          "ari_min": 0.34525330916808,
+          "ari_max": 0.774052722292161,
+          "ari_q05_q95": [
+            0.34525330916808,
+            0.7311473538906955
+          ],
+          "sil_mean": 0.37084045737300847,
+          "k_counts": {
+            "2": 42,
+            "3": 23,
+            "4": 35
+          },
+          "share_k_equal_published": 0.42,
+          "share_ari_within_0.01_of_published": 0.07,
+          "distinct_label_hashes": 100
+        }
+      },
+      "user_knowledge": {
+        "published": {
+          "ari": 0.091,
+          "sil": 0.158,
+          "k": 2
+        },
+        "original_order": {
+          "ari": 0.103250257927149,
+          "sil": 0.155875678403424,
+          "k": 2,
+          "seconds": 0.849,
+          "n": 258,
+          "d": 5
+        },
+        "permutations": {
+          "count": 100,
+          "ari_mean": 0.10325025792714902,
+          "ari_ci95": [
+            0.10325025792714902,
+            0.10325025792714902
+          ],
+          "ari_min": 0.103250257927149,
+          "ari_max": 0.103250257927149,
+          "ari_q05_q95": [
+            0.103250257927149,
+            0.103250257927149
+          ],
+          "sil_mean": 0.15587567840342403,
+          "k_counts": {
+            "2": 100
+          },
+          "share_k_equal_published": 1.0,
+          "share_ari_within_0.01_of_published": 0.0,
+          "distinct_label_hashes": 99
+        }
+      },
+      "wholesale": {
+        "published": {
+          "ari": 0.002,
+          "sil": 0.113,
+          "k": 3
+        },
+        "original_order": {
+          "ari": 0.0024662755767777,
+          "sil": 0.113130229970334,
+          "k": 3,
+          "seconds": 2.859,
+          "n": 440,
+          "d": 6
+        },
+        "permutations": {
+          "count": 100,
+          "ari_mean": 0.006074638505439348,
+          "ari_ci95": [
+            0.003616230455008827,
+            0.00869805122962466
+          ],
+          "ari_min": -0.00379802915142791,
+          "ari_max": 0.0292012386248004,
+          "ari_q05_q95": [
+            -0.00379802915142791,
+            0.0292012386248004
+          ],
+          "sil_mean": 0.1572157605692882,
+          "k_counts": {
+            "2": 58,
+            "3": 11,
+            "19": 1,
+            "20": 4,
+            "21": 2,
+            "22": 1,
+            "23": 2,
+            "25": 1,
+            "26": 3,
+            "27": 2,
+            "28": 2,
+            "29": 1,
+            "31": 1,
+            "33": 2,
+            "48": 1,
+            "50": 2,
+            "52": 2,
+            "53": 3,
+            "54": 1
+          },
+          "share_k_equal_published": 0.11,
+          "share_ari_within_0.01_of_published": 0.76,
+          "distinct_label_hashes": 100
+        }
+      }
+    },
+    "driver_dfix": {
+      "user_knowledge": {
+        "published": {
+          "ari": 0.091,
+          "sil": 0.158,
+          "k": 2
+        },
+        "original_order": {
+          "ari": 0.146599536234057,
+          "sil": 0.164783601314395,
+          "k": 2,
+          "seconds": 0.848,
+          "n": 258,
+          "d": 5
+        },
+        "permutations": {
+          "count": 100,
+          "ari_mean": 0.18580991152847012,
+          "ari_ci95": [
+            0.17841172751065631,
+            0.1932080955462839
+          ],
+          "ari_min": 0.146599536234057,
+          "ari_max": 0.220581376412195,
+          "ari_q05_q95": [
+            0.146599536234057,
+            0.220581376412195
+          ],
+          "sil_mean": 0.16369143778003306,
+          "k_counts": {
+            "2": 100
+          },
+          "share_k_equal_published": 1.0,
+          "share_ari_within_0.01_of_published": 0.0,
+          "distinct_label_hashes": 99
+        }
+      },
+      "wholesale": {
+        "published": {
+          "ari": 0.002,
+          "sil": 0.113,
+          "k": 3
+        },
+        "original_order": {
+          "ari": -0.00564347792816573,
+          "sil": 0.111665827253871,
+          "k": 2,
+          "seconds": 2.461,
+          "n": 440,
+          "d": 6
+        },
+        "permutations": {
+          "count": 100,
+          "ari_mean": -0.0018950447627259404,
+          "ari_ci95": [
+            -0.002750721780466375,
+            -0.0010179846658335309
+          ],
+          "ari_min": -0.00564347792816573,
+          "ari_max": 0.00606176329942534,
+          "ari_q05_q95": [
+            -0.00564347792816573,
+            0.005318847278073217
+          ],
+          "sil_mean": 0.0818678474812059,
+          "k_counts": {
+            "2": 57,
+            "27": 2,
+            "28": 1,
+            "29": 3,
+            "30": 4,
+            "31": 8,
+            "32": 9,
+            "33": 6,
+            "34": 3,
+            "35": 2,
+            "36": 2,
+            "38": 1,
+            "40": 1,
+            "41": 1
+          },
+          "share_k_equal_published": 0.0,
+          "share_ari_within_0.01_of_published": 1.0,
+          "distinct_label_hashes": 100
+        }
+      }
+    },
+    "driver_tableB": {
+      "D31": {
+        "published": {
+          "ari": 0.799,
+          "sil": 0.474,
+          "k": 31
+        },
+        "original_order": {
+          "ari": 0.749935394856032,
+          "sil": 0.444154617239085,
+          "k": 31,
+          "seconds": 1304.733,
+          "n": 3100,
+          "d": 2
+        },
+        "permutations": {
+          "count": 0,
+          "ari_mean": null,
+          "ari_ci95": [
+            NaN,
+            NaN
+          ],
+          "ari_min": null,
+          "ari_max": null,
+          "ari_q05_q95": null,
+          "sil_mean": null,
+          "k_counts": {},
+          "share_k_equal_published": null,
+          "share_ari_within_0.01_of_published": null,
+          "distinct_label_hashes": 0
+        }
+      },
+      "R15": {
+        "published": {
+          "ari": 0.975,
+          "sil": 0.742,
+          "k": 15
+        },
+        "original_order": {
+          "ari": 0.974966169262289,
+          "sil": 0.742083133859453,
+          "k": 15,
+          "seconds": 5.23,
+          "n": 600,
+          "d": 2
+        },
+        "permutations": {
+          "count": 0,
+          "ari_mean": null,
+          "ari_ci95": [
+            NaN,
+            NaN
+          ],
+          "ari_min": null,
+          "ari_max": null,
+          "ari_q05_q95": null,
+          "sil_mean": null,
+          "k_counts": {},
+          "share_k_equal_published": null,
+          "share_ari_within_0.01_of_published": null,
+          "distinct_label_hashes": 0
+        }
+      },
+      "asymmetric": {
+        "published": {
+          "ari": 0.736,
+          "sil": 0.606,
+          "k": 4
+        },
+        "original_order": {
+          "ari": 0.739491700250971,
+          "sil": 0.60574389433255,
+          "k": 4,
+          "seconds": 21.671,
+          "n": 1000,
+          "d": 2
+        },
+        "permutations": {
+          "count": 0,
+          "ari_mean": null,
+          "ari_ci95": [
+            NaN,
+            NaN
+          ],
+          "ari_min": null,
+          "ari_max": null,
+          "ari_q05_q95": null,
+          "sil_mean": null,
+          "k_counts": {},
+          "share_k_equal_published": null,
+          "share_ari_within_0.01_of_published": null,
+          "distinct_label_hashes": 0
+        }
+      },
+      "iris": {
+        "published": {
+          "ari": 0.599,
+          "sil": 0.445,
+          "k": 3
+        },
+        "original_order": {
+          "ari": 0.599479330478929,
+          "sil": 0.444897873541922,
+          "k": 3,
+          "seconds": 0.39,
+          "n": 147,
+          "d": 4
+        },
+        "permutations": {
+          "count": 0,
+          "ari_mean": null,
+          "ari_ci95": [
+            NaN,
+            NaN
+          ],
+          "ari_min": null,
+          "ari_max": null,
+          "ari_q05_q95": null,
+          "sil_mean": null,
+          "k_counts": {},
+          "share_k_equal_published": null,
+          "share_ari_within_0.01_of_published": null,
+          "distinct_label_hashes": 0
+        }
+      },
+      "seeds": {
+        "published": {
+          "ari": 0.509,
+          "sil": 0.467,
+          "k": 2
+        },
+        "original_order": {
+          "ari": 0.508680758005175,
+          "sil": 0.466990369150895,
+          "k": 2,
+          "seconds": 4.796,
+          "n": 210,
+          "d": 7
+        },
+        "permutations": {
+          "count": 0,
+          "ari_mean": null,
+          "ari_ci95": [
+            NaN,
+            NaN
+          ],
+          "ari_min": null,
+          "ari_max": null,
+          "ari_q05_q95": null,
+          "sil_mean": null,
+          "k_counts": {},
+          "share_k_equal_published": null,
+          "share_ari_within_0.01_of_published": null,
+          "distinct_label_hashes": 0
+        }
+      },
+      "user_knowledge": {
+        "published": {
+          "ari": 0.091,
+          "sil": 0.158,
+          "k": 2
+        },
+        "original_order": {
+          "ari": 0.09144223865113,
+          "sil": 0.157731629574994,
+          "k": 2,
+          "seconds": 1.34,
+          "n": 258,
+          "d": 5
+        },
+        "permutations": {
+          "count": 0,
+          "ari_mean": null,
+          "ari_ci95": [
+            NaN,
+            NaN
+          ],
+          "ari_min": null,
+          "ari_max": null,
+          "ari_q05_q95": null,
+          "sil_mean": null,
+          "k_counts": {},
+          "share_k_equal_published": null,
+          "share_ari_within_0.01_of_published": null,
+          "distinct_label_hashes": 0
+        }
+      },
+      "wholesale": {
+        "published": {
+          "ari": 0.002,
+          "sil": 0.113,
+          "k": 3
+        },
+        "original_order": {
+          "ari": 0.0024662755767777,
+          "sil": 0.113130229970334,
+          "k": 3,
+          "seconds": 2.594,
+          "n": 440,
+          "d": 6
+        },
+        "permutations": {
+          "count": 0,
+          "ari_mean": null,
+          "ari_ci95": [
+            NaN,
+            NaN
+          ],
+          "ari_min": null,
+          "ari_max": null,
+          "ari_q05_q95": null,
+          "sil_mean": null,
+          "k_counts": {},
+          "share_k_equal_published": null,
+          "share_ari_within_0.01_of_published": null,
+          "distinct_label_hashes": 0
+        }
+      }
+    },
+    "stated": {
+      "D31": {
+        "published": {
+          "ari": 0.799,
+          "sil": 0.474,
+          "k": 31
+        },
+        "original_order": {
+          "ari": 0.523894985828936,
+          "sil": 0.456597014130049,
+          "k": 15,
+          "seconds": 1013.423,
+          "n": 3100,
+          "d": 2
+        },
+        "permutations": {
+          "count": 5,
+          "ari_mean": 0.5228743330445482,
+          "ari_ci95": [
+            0.5209497480493466,
+            0.5253493864543335
+          ],
+          "ari_min": 0.52067978512309,
+          "ari_max": 0.527481468256263,
+          "ari_q05_q95": [
+            0.5207041282058628,
+            0.5267097230809682
+          ],
+          "sil_mean": 0.4547563068510082,
+          "k_counts": {
+            "15": 5
+          },
+          "share_k_equal_published": 0.0,
+          "share_ari_within_0.01_of_published": 0.0,
+          "distinct_label_hashes": 5
+        }
+      },
+      "R15": {
+        "published": {
+          "ari": 0.975,
+          "sil": 0.742,
+          "k": 15
+        },
+        "original_order": {
+          "ari": 0.795081072904353,
+          "sil": 0.643089534196181,
+          "k": 13,
+          "seconds": 7.725,
+          "n": 600,
+          "d": 2
+        },
+        "permutations": {
+          "count": 100,
+          "ari_mean": 0.795081072904353,
+          "ari_ci95": [
+            0.795081072904353,
+            0.795081072904353
+          ],
+          "ari_min": 0.795081072904353,
+          "ari_max": 0.795081072904353,
+          "ari_q05_q95": [
+            0.795081072904353,
+            0.795081072904353
+          ],
+          "sil_mean": 0.6430895341961806,
+          "k_counts": {
+            "13": 100
+          },
+          "share_k_equal_published": 0.0,
+          "share_ari_within_0.01_of_published": 0.0,
+          "distinct_label_hashes": 100
+        }
+      },
+      "asymmetric": {
+        "published": {
+          "ari": 0.736,
+          "sil": 0.606,
+          "k": 4
+        },
+        "original_order": {
+          "ari": 0.923825439747959,
+          "sil": 0.623899571260812,
+          "k": 5,
+          "seconds": 33.831,
+          "n": 1000,
+          "d": 2
+        },
+        "permutations": {
+          "count": 100,
+          "ari_mean": 0.9245254660408755,
+          "ari_ci95": [
+            0.9243154581530005,
+            0.9247354739287504
+          ],
+          "ari_min": 0.923825439747959,
+          "ari_max": 0.926158860724347,
+          "ari_q05_q95": [
+            0.923825439747959,
+            0.926158860724347
+          ],
+          "sil_mean": 0.6237517987439309,
+          "k_counts": {
+            "5": 100
+          },
+          "share_k_equal_published": 0.0,
+          "share_ari_within_0.01_of_published": 0.0,
+          "distinct_label_hashes": 100
+        }
+      },
+      "iris": {
+        "published": {
+          "ari": 0.599,
+          "sil": 0.445,
+          "k": 3
+        },
+        "original_order": {
+          "ari": 0.615659983812168,
+          "sil": 0.451764039475242,
+          "k": 3,
+          "seconds": 0.441,
+          "n": 147,
+          "d": 4
+        },
+        "permutations": {
+          "count": 100,
+          "ari_mean": 0.6156599838121678,
+          "ari_ci95": [
+            0.6156599838121678,
+            0.6156599838121678
+          ],
+          "ari_min": 0.615659983812168,
+          "ari_max": 0.615659983812168,
+          "ari_q05_q95": [
+            0.615659983812168,
+            0.615659983812168
+          ],
+          "sil_mean": 0.4517640394752419,
+          "k_counts": {
+            "3": 100
+          },
+          "share_k_equal_published": 1.0,
+          "share_ari_within_0.01_of_published": 0.0,
+          "distinct_label_hashes": 98
+        }
+      },
+      "seeds": {
+        "published": {
+          "ari": 0.509,
+          "sil": 0.467,
+          "k": 2
+        },
+        "original_order": {
+          "ari": 0.434571029557856,
+          "sil": 0.426094592226184,
+          "k": 2,
+          "seconds": 0.542,
+          "n": 210,
+          "d": 7
+        },
+        "permutations": {
+          "count": 100,
+          "ari_mean": 0.4345710295578559,
+          "ari_ci95": [
+            0.4345710295578559,
+            0.4345710295578559
+          ],
+          "ari_min": 0.434571029557856,
+          "ari_max": 0.434571029557856,
+          "ari_q05_q95": [
+            0.434571029557856,
+            0.434571029557856
+          ],
+          "sil_mean": 0.42609459222618395,
+          "k_counts": {
+            "2": 100
+          },
+          "share_k_equal_published": 1.0,
+          "share_ari_within_0.01_of_published": 0.0,
+          "distinct_label_hashes": 98
+        }
+      },
+      "user_knowledge": {
+        "published": {
+          "ari": 0.091,
+          "sil": 0.158,
+          "k": 2
+        },
+        "original_order": {
+          "ari": 0.0828686551692749,
+          "sil": 0.155786991343032,
+          "k": 2,
+          "seconds": 0.959,
+          "n": 258,
+          "d": 5
+        },
+        "permutations": {
+          "count": 100,
+          "ari_mean": 0.0828686551692749,
+          "ari_ci95": [
+            0.0828686551692749,
+            0.0828686551692749
+          ],
+          "ari_min": 0.0828686551692749,
+          "ari_max": 0.0828686551692749,
+          "ari_q05_q95": [
+            0.0828686551692749,
+            0.0828686551692749
+          ],
+          "sil_mean": 0.155786991343032,
+          "k_counts": {
+            "2": 100
+          },
+          "share_k_equal_published": 1.0,
+          "share_ari_within_0.01_of_published": 1.0,
+          "distinct_label_hashes": 100
+        }
+      },
+      "wholesale": {
+        "published": {
+          "ari": 0.002,
+          "sil": 0.113,
+          "k": 3
+        },
+        "original_order": {
+          "ari": -0.00315195278073068,
+          "sil": 0.375701162293176,
+          "k": 2,
+          "seconds": 2.371,
+          "n": 440,
+          "d": 6
+        },
+        "permutations": {
+          "count": 100,
+          "ari_mean": -0.0031519527807306797,
+          "ari_ci95": [
+            -0.0031519527807306797,
+            -0.0031519527807306797
+          ],
+          "ari_min": -0.00315195278073068,
+          "ari_max": -0.00315195278073068,
+          "ari_q05_q95": [
+            -0.00315195278073068,
+            -0.00315195278073068
+          ],
+          "sil_mean": 0.37570116229317596,
+          "k_counts": {
+            "2": 100
+          },
+          "share_k_equal_published": 0.0,
+          "share_ari_within_0.01_of_published": 1.0,
+          "distinct_label_hashes": 100
+        }
+      }
+    }
+  },
+  "baselines": {
+    "DBSCAN": {
+      "D31": {
+        "published": {
+          "ari": 0.35,
+          "sil": 0.343,
+          "k": 15
+        },
+        "runs": 1,
+        "ari_mean": 0.350242190355724,
+        "ari_ci95": [
+          NaN,
+          NaN
+        ],
+        "ari_min": 0.350242190355724,
+        "ari_max": 0.350242190355724,
+        "share_runs_ari_below_published": 0.0,
+        "share_runs_ari_equal_published": 1.0,
+        "published_within_range": true,
+        "sil_mean": 0.343472853587624,
+        "k_counts": {
+          "15": 1
+        }
+      },
+      "R15": {
+        "published": {
+          "ari": 0.936,
+          "sil": 0.702,
+          "k": 15
+        },
+        "runs": 1,
+        "ari_mean": 0.935698511482011,
+        "ari_ci95": [
+          NaN,
+          NaN
+        ],
+        "ari_min": 0.935698511482011,
+        "ari_max": 0.935698511482011,
+        "share_runs_ari_below_published": 0.0,
+        "share_runs_ari_equal_published": 1.0,
+        "published_within_range": true,
+        "sil_mean": 0.701663307944763,
+        "k_counts": {
+          "15": 1
+        }
+      },
+      "asymmetric": {
+        "published": {
+          "ari": 0.467,
+          "sil": 0.548,
+          "k": 3
+        },
+        "runs": 1,
+        "ari_mean": 0.464488890103887,
+        "ari_ci95": [
+          NaN,
+          NaN
+        ],
+        "ari_min": 0.464488890103887,
+        "ari_max": 0.464488890103887,
+        "share_runs_ari_below_published": 1.0,
+        "share_runs_ari_equal_published": 0.0,
+        "published_within_range": false,
+        "sil_mean": 0.561866506860508,
+        "k_counts": {
+          "3": 1
+        }
+      },
+      "iris": {
+        "published": {
+          "ari": 0.544,
+          "sil": 0.517,
+          "k": 2
+        },
+        "runs": 1,
+        "ari_mean": 0.544476825476663,
+        "ari_ci95": [
+          NaN,
+          NaN
+        ],
+        "ari_min": 0.544476825476663,
+        "ari_max": 0.544476825476663,
+        "share_runs_ari_below_published": 0.0,
+        "share_runs_ari_equal_published": 1.0,
+        "published_within_range": true,
+        "sil_mean": 0.517363465963736,
+        "k_counts": {
+          "2": 1
+        }
+      },
+      "seeds": {
+        "published": {
+          "ari": 0.003,
+          "sil": 0.121,
+          "k": 1
+        },
+        "runs": 1,
+        "ari_mean": 0.00341577717198202,
+        "ari_ci95": [
+          NaN,
+          NaN
+        ],
+        "ari_min": 0.00341577717198202,
+        "ari_max": 0.00341577717198202,
+        "share_runs_ari_below_published": 0.0,
+        "share_runs_ari_equal_published": 1.0,
+        "published_within_range": true,
+        "sil_mean": 0.120687221710572,
+        "k_counts": {
+          "1": 1
+        }
+      },
+      "user_knowledge": {
+        "published": {
+          "ari": 0.005,
+          "sil": 0.198,
+          "k": 1
+        },
+        "runs": 1,
+        "ari_mean": 0.00522785662933492,
+        "ari_ci95": [
+          NaN,
+          NaN
+        ],
+        "ari_min": 0.00522785662933492,
+        "ari_max": 0.00522785662933492,
+        "share_runs_ari_below_published": 0.0,
+        "share_runs_ari_equal_published": 1.0,
+        "published_within_range": true,
+        "sil_mean": 0.198167114051879,
+        "k_counts": {
+          "1": 1
+        }
+      },
+      "wholesale": {
+        "published": {
+          "ari": 0.006,
+          "sil": 0.569,
+          "k": 1
+        },
+        "runs": 1,
+        "ari_mean": 0.00551840013289405,
+        "ari_ci95": [
+          NaN,
+          NaN
+        ],
+        "ari_min": 0.00551840013289405,
+        "ari_max": 0.00551840013289405,
+        "share_runs_ari_below_published": 0.0,
+        "share_runs_ari_equal_published": 1.0,
+        "published_within_range": true,
+        "sil_mean": 0.569127297237326,
+        "k_counts": {
+          "1": 1
+        }
+      }
+    },
+    "K-means++": {
+      "D31": {
+        "published": {
+          "ari": 0.912,
+          "sil": 0.547,
+          "k": 31
+        },
+        "runs": 100,
+        "ari_mean": 0.8505886880935636,
+        "ari_ci95": [
+          0.8432707683174958,
+          0.8581369610087904
+        ],
+        "ari_min": 0.768785711049104,
+        "ari_max": 0.954775928914425,
+        "share_runs_ari_below_published": 0.95,
+        "share_runs_ari_equal_published": 0.0,
+        "published_within_range": true,
+        "sil_mean": 0.526805657491822,
+        "k_counts": {
+          "31": 100
+        }
+      },
+      "R15": {
+        "published": {
+          "ari": 0.894,
+          "sil": 0.678,
+          "k": 15
+        },
+        "runs": 100,
+        "ari_mean": 0.8791564888531777,
+        "ari_ci95": [
+          0.8672650688864644,
+          0.891077197209372
+        ],
+        "ari_min": 0.727119291446987,
+        "ari_max": 0.99277819941363,
+        "share_runs_ari_below_published": 0.53,
+        "share_runs_ari_equal_published": 0.08,
+        "published_within_range": true,
+        "sil_mean": 0.6658632038499863,
+        "k_counts": {
+          "15": 100
+        }
+      },
+      "asymmetric": {
+        "published": {
+          "ari": 0.882,
+          "sil": 0.645,
+          "k": 5
+        },
+        "runs": 100,
+        "ari_mean": 0.8232102330083751,
+        "ari_ci95": [
+          0.8040561104734691,
+          0.8414341139062298
+        ],
+        "ari_min": 0.618779425740487,
+        "ari_max": 0.882266452120157,
+        "share_runs_ari_below_published": 0.44,
+        "share_runs_ari_equal_published": 0.56,
+        "published_within_range": true,
+        "sil_mean": 0.6272575754831009,
+        "k_counts": {
+          "5": 100
+        }
+      },
+      "iris": {
+        "published": {
+          "ari": 0.59,
+          "sil": 0.459,
+          "k": 3
+        },
+        "runs": 100,
+        "ari_mean": 0.5808147658198759,
+        "ari_ci95": [
+          0.5648021617996565,
+          0.5961330030012377
+        ],
+        "ari_min": 0.423928220179494,
+        "ari_max": 0.647924824085628,
+        "share_runs_ari_below_published": 0.22,
+        "share_runs_ari_equal_published": 0.25,
+        "published_within_range": true,
+        "sil_mean": 0.46114860791835716,
+        "k_counts": {
+          "3": 100
+        }
+      },
+      "seeds": {
+        "published": {
+          "ari": 0.773,
+          "sil": 0.404,
+          "k": 3
+        },
+        "runs": 100,
+        "ari_mean": 0.7793955427362563,
+        "ari_ci95": [
+          0.7770622227524387,
+          0.7819172048559297
+        ],
+        "ari_min": 0.770444662265714,
+        "ari_max": 0.822734447884946,
+        "share_runs_ari_below_published": 0.03,
+        "share_runs_ari_equal_published": 0.74,
+        "published_within_range": true,
+        "sil_mean": 0.4024588788009482,
+        "k_counts": {
+          "3": 100
+        }
+      },
+      "user_knowledge": {
+        "published": {
+          "ari": 0.202,
+          "sil": 0.169,
+          "k": 4
+        },
+        "runs": 100,
+        "ari_mean": 0.1540412215989214,
+        "ari_ci95": [
+          0.1447626192049465,
+          0.16353071466368121
+        ],
+        "ari_min": 0.0617672037556913,
+        "ari_max": 0.295736520378333,
+        "share_runs_ari_below_published": 0.85,
+        "share_runs_ari_equal_published": 0.0,
+        "published_within_range": true,
+        "sil_mean": 0.17728794055610106,
+        "k_counts": {
+          "4": 100
+        }
+      },
+      "wholesale": {
+        "published": {
+          "ari": -0.007,
+          "sil": 0.446,
+          "k": 3
+        },
+        "runs": 100,
+        "ari_mean": 0.009793453430923879,
+        "ari_ci95": [
+          0.005973111771032052,
+          0.013687015005716065
+        ],
+        "ari_min": -0.0355481193107428,
+        "ari_max": 0.0484129193355522,
+        "share_runs_ari_below_published": 0.13,
+        "share_runs_ari_equal_published": 0.03,
+        "published_within_range": true,
+        "sil_mean": 0.4690638278413351,
+        "k_counts": {
+          "3": 100
+        }
+      }
+    },
+    "Louvain": {
+      "D31": {
+        "published": {
+          "ari": 0.371,
+          "sil": 0.446,
+          "k": 9
+        },
+        "runs": 5,
+        "ari_mean": 0.36613737770784377,
+        "ari_ci95": [
+          0.35142388212963976,
+          0.3751279425873038
+        ],
+        "ari_min": 0.336771903087014,
+        "ari_max": 0.37636083061042,
+        "share_runs_ari_below_published": 0.2,
+        "share_runs_ari_equal_published": 0.4,
+        "published_within_range": true,
+        "sil_mean": 0.434763183847169,
+        "k_counts": {
+          "9": 5
+        }
+      },
+      "R15": {
+        "published": {
+          "ari": 0.604,
+          "sil": 0.644,
+          "k": 10
+        },
+        "runs": 100,
+        "ari_mean": 0.5505016117718846,
+        "ari_ci95": [
+          0.5375956126670417,
+          0.5628064401299289
+        ],
+        "ari_min": 0.467204728778633,
+        "ari_max": 0.608323316704994,
+        "share_runs_ari_below_published": 0.59,
+        "share_runs_ari_equal_published": 0.12,
+        "published_within_range": true,
+        "sil_mean": 0.6274962520279588,
+        "k_counts": {
+          "9": 40,
+          "10": 60
+        }
+      },
+      "asymmetric": {
+        "published": {
+          "ari": 0.805,
+          "sil": 0.479,
+          "k": 8
+        },
+        "runs": 100,
+        "ari_mean": 0.5607137587811281,
+        "ari_ci95": [
+          0.5607137587811281,
+          0.5607137587811281
+        ],
+        "ari_min": 0.560713758781128,
+        "ari_max": 0.560713758781128,
+        "share_runs_ari_below_published": 1.0,
+        "share_runs_ari_equal_published": 0.0,
+        "published_within_range": false,
+        "sil_mean": 0.491252677532795,
+        "k_counts": {
+          "3": 100
+        }
+      },
+      "iris": {
+        "published": {
+          "ari": 0.63,
+          "sil": 0.436,
+          "k": 3
+        },
+        "runs": 100,
+        "ari_mean": 0.630160044555875,
+        "ari_ci95": [
+          0.630160044555875,
+          0.630160044555875
+        ],
+        "ari_min": 0.630160044555875,
+        "ari_max": 0.630160044555875,
+        "share_runs_ari_below_published": 0.0,
+        "share_runs_ari_equal_published": 1.0,
+        "published_within_range": true,
+        "sil_mean": 0.43564650529015203,
+        "k_counts": {
+          "3": 100
+        }
+      },
+      "seeds": {
+        "published": {
+          "ari": 0.722,
+          "sil": 0.394,
+          "k": 3
+        },
+        "runs": 100,
+        "ari_mean": 0.7221331150667953,
+        "ari_ci95": [
+          0.7220475751861888,
+          0.7222186549474017
+        ],
+        "ari_min": 0.721628429771217,
+        "ari_max": 0.722483828577282,
+        "share_runs_ari_below_published": 0.0,
+        "share_runs_ari_equal_published": 1.0,
+        "published_within_range": true,
+        "sil_mean": 0.39565724429692295,
+        "k_counts": {
+          "3": 100
+        }
+      },
+      "user_knowledge": {
+        "published": {
+          "ari": 0.149,
+          "sil": 0.155,
+          "k": 5
+        },
+        "runs": 100,
+        "ari_mean": 0.19361635898023832,
+        "ari_ci95": [
+          0.1851299491777102,
+          0.2019661071432218
+        ],
+        "ari_min": 0.0961905828021474,
+        "ari_max": 0.295187589416976,
+        "share_runs_ari_below_published": 0.18,
+        "share_runs_ari_equal_published": 0.0,
+        "published_within_range": true,
+        "sil_mean": 0.17354255426303805,
+        "k_counts": {
+          "3": 25,
+          "4": 58,
+          "5": 17
+        }
+      },
+      "wholesale": {
+        "published": {
+          "ari": -0.004,
+          "sil": 0.243,
+          "k": 6
+        },
+        "runs": 100,
+        "ari_mean": -0.003909632544502033,
+        "ari_ci95": [
+          -0.004068296593402091,
+          -0.003738292035555657
+        ],
+        "ari_min": -0.00492450084848043,
+        "ari_max": -0.00194762351990581,
+        "share_runs_ari_below_published": 0.09,
+        "share_runs_ari_equal_published": 0.76,
+        "published_within_range": true,
+        "sil_mean": 0.21871233083940225,
+        "k_counts": {
+          "6": 85,
+          "7": 15
+        }
+      }
+    },
+    "Spectral": {
+      "D31": {
+        "published": {
+          "ari": 0.778,
+          "sil": 0.332,
+          "k": 31
+        },
+        "runs": 3,
+        "ari_mean": 0.8138562384321313,
+        "ari_ci95": [
+          0.782335131715099,
+          0.856066039441887
+        ],
+        "ari_min": 0.782335131715099,
+        "ari_max": 0.856066039441887,
+        "share_runs_ari_below_published": 0.0,
+        "share_runs_ari_equal_published": 0.0,
+        "published_within_range": false,
+        "sil_mean": 0.406774692042267,
+        "k_counts": {
+          "31": 3
+        }
+      },
+      "R15": {
+        "published": {
+          "ari": 0.899,
+          "sil": 0.611,
+          "k": 15
+        },
+        "runs": 100,
+        "ari_mean": 0.8565383989398838,
+        "ari_ci95": [
+          0.8405054350881607,
+          0.8719612506571596
+        ],
+        "ari_min": 0.574091805004217,
+        "ari_max": 0.99277819941363,
+        "share_runs_ari_below_published": 0.57,
+        "share_runs_ari_equal_published": 0.0,
+        "published_within_range": true,
+        "sil_mean": 0.5610356184195786,
+        "k_counts": {
+          "15": 100
+        }
+      },
+      "asymmetric": {
+        "published": {
+          "ari": 0.975,
+          "sil": 0.623,
+          "k": 5
+        },
+        "runs": 50,
+        "ari_mean": 0.8642936885293169,
+        "ari_ci95": [
+          0.8340018323257707,
+          0.8948004798978986
+        ],
+        "ari_min": 0.682626797010853,
+        "ari_max": 0.975204368642428,
+        "share_runs_ari_below_published": 0.9,
+        "share_runs_ari_equal_published": 0.1,
+        "published_within_range": true,
+        "sil_mean": 0.5183558149599488,
+        "k_counts": {
+          "5": 50
+        }
+      },
+      "iris": {
+        "published": {
+          "ari": 0.555,
+          "sil": 0.475,
+          "k": 3
+        },
+        "runs": 100,
+        "ari_mean": 0.5637667639627153,
+        "ari_ci95": [
+          0.5577017658633404,
+          0.5713897458615956
+        ],
+        "ari_min": 0.55294622546387,
+        "ari_max": 0.707616387586747,
+        "share_runs_ari_below_published": 0.11,
+        "share_runs_ari_equal_published": 0.7,
+        "published_within_range": true,
+        "sil_mean": 0.47344866165152033,
+        "k_counts": {
+          "3": 100
+        }
+      },
+      "seeds": {
+        "published": {
+          "ari": 0.679,
+          "sil": 0.349,
+          "k": 3
+        },
+        "runs": 100,
+        "ari_mean": 0.5919228089554054,
+        "ari_ci95": [
+          0.5672195572863783,
+          0.6153548375089573
+        ],
+        "ari_min": 0.396833849621203,
+        "ari_max": 0.735108768710876,
+        "share_runs_ari_below_published": 0.47,
+        "share_runs_ari_equal_published": 0.29,
+        "published_within_range": true,
+        "sil_mean": 0.3386990517458455,
+        "k_counts": {
+          "3": 100
+        }
+      },
+      "user_knowledge": {
+        "published": {
+          "ari": 0.189,
+          "sil": 0.12,
+          "k": 4
+        },
+        "runs": 100,
+        "ari_mean": 0.25831519268075964,
+        "ari_ci95": [
+          0.24663010479459235,
+          0.26851050286002964
+        ],
+        "ari_min": 0.0149866170784467,
+        "ari_max": 0.311655728219625,
+        "share_runs_ari_below_published": 0.13,
+        "share_runs_ari_equal_published": 0.02,
+        "published_within_range": true,
+        "sil_mean": 0.12352317982639434,
+        "k_counts": {
+          "4": 100
+        }
+      },
+      "wholesale": {
+        "published": {
+          "ari": -0.012,
+          "sil": 0.446,
+          "k": 3
+        },
+        "runs": 100,
+        "ari_mean": -0.0049044482589432345,
+        "ari_ci95": [
+          -0.007089328509766189,
+          -0.0025983505694357704
+        ],
+        "ari_min": -0.0233476751372898,
+        "ari_max": 0.0369811155934633,
+        "share_runs_ari_below_published": 0.19,
+        "share_runs_ari_equal_published": 0.0,
+        "published_within_range": true,
+        "sil_mean": 0.5527780870027129,
+        "k_counts": {
+          "3": 100
+        }
+      }
+    }
+  },
+  "sim": {
+    "Gaussian/10d/n200/3": {
+      "reps": 200,
+      "errors": 0,
+      "ari_mean": 0.9476180431158571,
+      "ari_ci95": [
+        0.933964380804178,
+        0.959765863092936
+      ],
+      "sil_mean": 0.3870081003600575,
+      "sil_ci95": [
+        0.38229338870218504,
+        0.39167861256674197
+      ],
+      "sr_mean": 0.96,
+      "sr_ci95": [
+        0.93,
+        0.985
+      ],
+      "seconds_per_rep_mean": 5.435185000000001,
+      "rep_range": [
+        1,
+        200
+      ]
+    },
+    "Gaussian/20d/n200/5": {
+      "reps": 200,
+      "errors": 0,
+      "ari_mean": 0.45748594998024056,
+      "ari_ci95": [
+        0.42410677899573246,
+        0.4918028929321317
+      ],
+      "sil_mean": 0.23407188759894834,
+      "sil_ci95": [
+        0.22963007008232092,
+        0.23833655468685283
+      ],
+      "sr_mean": 0.195,
+      "sr_ci95": [
+        0.14,
+        0.25
+      ],
+      "seconds_per_rep_mean": 5.606365,
+      "rep_range": [
+        1,
+        200
+      ]
+    },
+    "Gaussian/2d/n50/2": {
+      "reps": 500,
+      "errors": 0,
+      "ari_mean": 0.931030637166544,
+      "ari_ci95": [
+        0.9178038519609273,
+        0.943557627615033
+      ],
+      "sil_mean": 0.6836380722540578,
+      "sil_ci95": [
+        0.6761561466684892,
+        0.6906034908423648
+      ],
+      "sr_mean": 0.986,
+      "sr_ci95": [
+        0.974,
+        0.996
+      ],
+      "seconds_per_rep_mean": 0.07385600000000002,
+      "rep_range": [
+        1,
+        500
+      ]
+    },
+    "Gaussian/2d/n50/3": {
+      "reps": 500,
+      "errors": 0,
+      "ari_mean": 0.8651752195779417,
+      "ari_ci95": [
+        0.8477980794672851,
+        0.8818362804372695
+      ],
+      "sil_mean": 0.6476694646340334,
+      "sil_ci95": [
+        0.6393221657916873,
+        0.6555647337880611
+      ],
+      "sr_mean": 0.85,
+      "sr_ci95": [
+        0.818,
+        0.88
+      ],
+      "seconds_per_rep_mean": 0.061161999999999994,
+      "rep_range": [
+        1,
+        500
+      ]
+    },
+    "Gaussian/2d/n50/5": {
+      "reps": 500,
+      "errors": 0,
+      "ari_mean": 0.649737164840986,
+      "ari_ci95": [
+        0.6294642469895229,
+        0.6698077778808949
+      ],
+      "sil_mean": 0.5260247674762436,
+      "sil_ci95": [
+        0.5169607967683496,
+        0.5350701007587145
+      ],
+      "sr_mean": 0.358,
+      "sr_ci95": [
+        0.316,
+        0.4
+      ],
+      "seconds_per_rep_mean": 0.055532000000000005,
+      "rep_range": [
+        1,
+        500
+      ]
+    },
+    "Uniform/10d/n200/3": {
+      "reps": 200,
+      "errors": 0,
+      "ari_mean": 1.0,
+      "ari_ci95": [
+        1.0,
+        1.0
+      ],
+      "sil_mean": 0.6011643711916719,
+      "sil_ci95": [
+        0.597685204710183,
+        0.6047384344087441
+      ],
+      "sr_mean": 1.0,
+      "sr_ci95": [
+        1.0,
+        1.0
+      ],
+      "seconds_per_rep_mean": 5.666385,
+      "rep_range": [
+        1,
+        200
+      ]
+    },
+    "Uniform/20d/n200/2": {
+      "reps": 500,
+      "errors": 0,
+      "ari_mean": 0.9604326073343761,
+      "ari_ci95": [
+        0.9522523281833114,
+        0.9681353107914721
+      ],
+      "sil_mean": 0.544760253661701,
+      "sil_ci95": [
+        0.5353252426130897,
+        0.5537609974066038
+      ],
+      "sr_mean": 0.84,
+      "sr_ci95": [
+        0.806,
+        0.872
+      ],
+      "seconds_per_rep_mean": 3.2390180000000006,
+      "rep_range": [
+        1,
+        500
+      ]
+    },
+    "Uniform/20d/n200/3": {
+      "reps": 500,
+      "errors": 2,
+      "ari_mean": 0.9092012636311566,
+      "ari_ci95": [
+        0.8938964795875366,
+        0.9241559576068684
+      ],
+      "sil_mean": 0.5518592190868039,
+      "sil_ci95": [
+        0.5458452966749343,
+        0.5577606750756638
+      ],
+      "sr_mean": 0.762,
+      "sr_ci95": [
+        0.724,
+        0.8
+      ],
+      "seconds_per_rep_mean": 4.6987179999999995,
+      "rep_range": [
+        1,
+        500
+      ]
+    },
+    "Uniform/20d/n200/3 [table B]": {
+      "reps": 500,
+      "errors": 0,
+      "ari_mean": 0.9098584367072233,
+      "ari_ci95": [
+        0.8950068829464051,
+        0.9244938389104395
+      ],
+      "sil_mean": 0.552527899477459,
+      "sil_ci95": [
+        0.5467601584898463,
+        0.5581662330219915
+      ],
+      "sr_mean": 0.752,
+      "sr_ci95": [
+        0.714,
+        0.788
+      ],
+      "seconds_per_rep_mean": 3.721034,
+      "rep_range": [
+        1,
+        500
+      ]
+    },
+    "Uniform/20d/n200/5": {
+      "reps": 500,
+      "errors": 0,
+      "ari_mean": 0.9161244010047092,
+      "ari_ci95": [
+        0.9019995006139342,
+        0.9295230303855169
+      ],
+      "sil_mean": 0.5063803082469052,
+      "sil_ci95": [
+        0.5021174390832004,
+        0.5105674221933169
+      ],
+      "sr_mean": 0.674,
+      "sr_ci95": [
+        0.632,
+        0.714
+      ],
+      "seconds_per_rep_mean": 3.4282719999999998,
+      "rep_range": [
+        1,
+        500
+      ]
+    },
+    "Uniform/20d/n200/5 [diagnostic ascend/999]": {
+      "reps": 100,
+      "errors": 0,
+      "ari_mean": 0.8951767647238733,
+      "ari_ci95": [
+        0.8573992496657323,
+        0.9287612987474096
+      ],
+      "sil_mean": 0.5032574434628806,
+      "sil_ci95": [
+        0.4936994881642674,
+        0.5121807289216543
+      ],
+      "sr_mean": 0.63,
+      "sr_ci95": [
+        0.53,
+        0.72
+      ],
+      "seconds_per_rep_mean": 0.22035,
+      "rep_range": [
+        1,
+        100
+      ]
+    },
+    "Uniform/20d/n200/5 [diagnostic descend/99]": {
+      "reps": 100,
+      "errors": 0,
+      "ari_mean": 0.7194743221929641,
+      "ari_ci95": [
+        0.6754298974475798,
+        0.7626075614598458
+      ],
+      "sil_mean": 0.45611111485318795,
+      "sil_ci95": [
+        0.44660513915098204,
+        0.46555317390768847
+      ],
+      "sr_mean": 0.18,
+      "sr_ci95": [
+        0.11,
+        0.26
+      ],
+      "seconds_per_rep_mean": 2.1260899999999996,
+      "rep_range": [
+        1,
+        100
+      ]
+    },
+    "Uniform/2d/n50/2": {
+      "reps": 500,
+      "errors": 0,
+      "ari_mean": 0.9801684848722254,
+      "ari_ci95": [
+        0.97238570583925,
+        0.9871253283410643
+      ],
+      "sil_mean": 0.690995134056118,
+      "sil_ci95": [
+        0.6864524348761784,
+        0.6953043542863628
+      ],
+      "sr_mean": 0.994,
+      "sr_ci95": [
+        0.986,
+        1.0
+      ],
+      "seconds_per_rep_mean": 0.033377999999999984,
+      "rep_range": [
+        1,
+        500
+      ]
+    },
+    "Uniform/2d/n50/3": {
+      "reps": 500,
+      "errors": 10,
+      "ari_mean": 0.9240986158632665,
+      "ari_ci95": [
+        0.910433056242771,
+        0.9371238200734932
+      ],
+      "sil_mean": 0.6567716113475022,
+      "sil_ci95": [
+        0.6503399364318485,
+        0.6630897986590757
+      ],
+      "sr_mean": 0.9,
+      "sr_ci95": [
+        0.874,
+        0.926
+      ],
+      "seconds_per_rep_mean": 0.029403999999999982,
+      "rep_range": [
+        1,
+        500
+      ]
+    },
+    "Uniform/2d/n50/5": {
+      "reps": 500,
+      "errors": 0,
+      "ari_mean": 0.6142115128629022,
+      "ari_ci95": [
+        0.5960542207078018,
+        0.6323685051287226
+      ],
+      "sil_mean": 0.5137270647551337,
+      "sil_ci95": [
+        0.5062632702619696,
+        0.5213253847007846
+      ],
+      "sr_mean": 0.224,
+      "sr_ci95": [
+        0.188,
+        0.262
+      ],
+      "seconds_per_rep_mean": 0.026255999999999988,
+      "rep_range": [
+        1,
+        500
+      ]
+    },
+    "Uniform/5d/n500/2": {
+      "reps": 20,
+      "errors": 0,
+      "ari_mean": 0.9995999984064257,
+      "ari_ci95": [
+        0.9987999952192771,
+        1.0
+      ],
+      "sil_mean": 0.6317051368005314,
+      "sil_ci95": [
+        0.6207522665005777,
+        0.6420510600984651
+      ],
+      "sr_mean": 1.0,
+      "sr_ci95": [
+        1.0,
+        1.0
+      ],
+      "seconds_per_rep_mean": 2.2392499999999997,
+      "rep_range": [
+        1,
+        20
+      ]
+    },
+    "Uniform/5d/n500/3": {
+      "reps": 20,
+      "errors": 0,
+      "ari_mean": 1.0,
+      "ari_ci95": [
+        1.0,
+        1.0
+      ],
+      "sil_mean": 0.6286227747283595,
+      "sil_ci95": [
+        0.6162219385305382,
+        0.641086641940967
+      ],
+      "sr_mean": 1.0,
+      "sr_ci95": [
+        1.0,
+        1.0
+      ],
+      "seconds_per_rep_mean": 2.109400000000001,
+      "rep_range": [
+        1,
+        20
+      ]
+    },
+    "Uniform/5d/n500/5": {
+      "reps": 20,
+      "errors": 0,
+      "ari_mean": 0.9958462169632025,
+      "ari_ci95": [
+        0.987789407178615,
+        1.0
+      ],
+      "sil_mean": 0.5721765339599212,
+      "sil_ci95": [
+        0.5621483496117358,
+        0.5817564730412504
+      ],
+      "sr_mean": 1.0,
+      "sr_ci95": [
+        1.0,
+        1.0
+      ],
+      "seconds_per_rep_mean": 1.9763999999999993,
+      "rep_range": [
+        1,
+        20
+      ]
+    }
+  },
+  "errors": []
+}

@@ -1,0 +1,7 @@
+iris x louvain: the ARI is 0.630160044555875 the average silhouette index is 0.435646505290152 number of clusters detected 3"
+seeds x louvain: the ARI is 0.721628429771217 the average silhouette index is 0.398267712774506 number of clusters detected 3"
+user_knowledge x louvain: the ARI is 0.185236544247631 the average silhouette index is 0.191977810844802 number of clusters detected 4"
+wholesale x louvain: the ARI is -0.00418361607620609 the average silhouette index is 0.242587112805748 number of clusters detected 6"
+breast_cancer x louvain: the ARI is 0.821269261588107 the average silhouette index is 0.426188333393425 number of clusters detected 2"
+aggregation x louvain: the ARI is 0.80550322379768 the average silhouette index is 0.479163070389733 number of clusters detected 8"
+asymmetric x louvain: the ARI is 0.560713758781128 the average silhouette index is 0.491252677532795 number of clusters detected 3"

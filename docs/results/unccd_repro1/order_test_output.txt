@@ -1,0 +1,17 @@
+
+Attaching package: 'igraph'
+
+The following objects are masked from 'package:stats':
+
+    decompose, spectrum
+
+The following object is masked from 'package:base':
+
+    union
+
+perm 1001 radii identical: TRUE  n differ: 0  max abs diff: 0 
+   ARI 0.7740527 k 3 
+perm 1002 radii identical: TRUE  n differ: 0  max abs diff: 0 
+   ARI 0.4426146 k 2 
+perm 1003 radii identical: TRUE  n differ: 0  max abs diff: 0 
+   ARI 0.6974552 k 3 
