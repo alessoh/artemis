@@ -1,0 +1,5 @@
+# The Artemis Lanyon wave-speed audit (lab/lanyon_audit). The lab itself needs only these:
+numpy>=1.26
+scipy>=1.11
+sympy>=1.12
+mpmath>=1.3

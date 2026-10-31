@@ -24,3 +24,4 @@ runs/
 
 # Website build dependencies
 site/node_modules/
+lab/lanyon_audit/work/
