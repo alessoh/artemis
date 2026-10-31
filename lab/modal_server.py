@@ -40,9 +40,11 @@ from pathlib import Path
 
 import modal
 
-# The CI-built Omnigent server image, unmodified. Pinning a version tag
-# instead of ``latest`` is recommended once Phase 1 passes.
-SERVER_IMAGE = "ghcr.io/omnigent-ai/omnigent-server:latest"
+# The CI-built Omnigent server image, unmodified, pinned to the release the
+# Artemis client (artemis_core/omnigent_api.py) was written and tested against.
+# ``latest`` moved on to 0.17-0.20, whose client changes break that client;
+# upgrade deliberately, together with the client, never by redeploying.
+SERVER_IMAGE = "ghcr.io/omnigent-ai/omnigent-server:v0.16.0"
 # The image's uvicorn port (Omnigent deploy/docker/Dockerfile: EXPOSE 8000).
 SERVER_PORT = 8000
 # First boot runs database migrations over the network; allow headroom.
