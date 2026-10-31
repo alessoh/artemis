@@ -1,0 +1,10 @@
+Brio-Wu                              spec      ok                     steps=   341 min p=8.828e-02 min rho=1.174e-01
+Brio-Wu                              textbook  ok                     steps=   336 min p=8.829e-02 min rho=1.174e-01
+Brio-Wu, flow +2 (Galilean shift)    spec      positivity lost        steps=   301 min p=-3.561e+00 min rho=5.028e-02
+Brio-Wu, flow +2 (Galilean shift)    textbook  ok                     steps=   253 min p=8.925e-02 min rho=1.181e-01
+Ryu-Jones 2a                         spec      ok                     steps=   443 min p=9.500e-01 min rho=1.000e+00
+Ryu-Jones 2a                         textbook  ok                     steps=   514 min p=9.500e-01 min rho=1.000e+00
+Strong field, low beta               spec      ok                     steps=   373 min p=4.219e-02 min rho=4.424e-01
+Strong field, low beta               textbook  ok                     steps=   339 min p=4.193e-02 min rho=4.424e-01
+Fast transverse flow                 spec      ok                     steps=   322 min p=1.174e-01 min rho=4.096e-01
+Fast transverse flow                 textbook  ok                     steps=   323 min p=8.740e-01 min rho=4.275e-01

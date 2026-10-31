@@ -1,0 +1,8 @@
+interfaces sampled: 20000 (seed 20261031)
+states where listed speeds differ from true Jacobian eigenvalues: 40000 of 40000
+states where textbook fast speed matches the true spectral bound: 40000 of 40000
+interfaces where spec amax < true max |eigenvalue|: 10429 of 20000 (52.1%)
+ratio amax / true: min 0.532, 1st pct 0.610, median 0.990
+worst case (rho, momx, momy, momz, Bx, By, Bz, energy, gamma), left then right:
+   (1.5435, 2.1915, 5.6659, -0.8839, -0.3167, -1.7337, -1.4212, 18.1382, 1.4)
+   (1.4117, 4.9775, -0.5925, 2.0088, 0.7176, 3.4701, -3.2013, 21.9907, 1.4)
