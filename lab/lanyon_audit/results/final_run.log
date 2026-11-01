@@ -1,0 +1,30 @@
+Preflight: compiling Lanyon's C kernel driver for all 144 tasks ...
+H1: census on the final seed ...
+{
+  "holds": false,
+  "specs_failing_c1": 12,
+  "specs_failing_c2": 15,
+  "tasks_below_400_points": {
+    "IdealMHD/hyperbolic_ideal_mhd_1d/x": 279,
+    "IdealMHD/hyperbolic_ideal_mhd_2d/x": 261,
+    "IdealMHD/hyperbolic_ideal_mhd_2d/y": 284,
+    "IdealMHD/hyperbolic_ideal_mhd_3d/x": 285,
+    "IdealMHD/hyperbolic_ideal_mhd_3d/y": 274,
+    "IdealMHD/hyperbolic_ideal_mhd_3d/z": 260,
+    "IdealMHD/ideal_mhd_2d/y": 398,
+    "IdealMHD/ideal_mhd_3d/y": 382
+  }
+}
+H2: the frozen search on the final seed ...
+{
+  "holds": true,
+  "exploratory_extra_violations": []
+}
+H3: Lanyon's C kernels at the census's worst points ...
+{
+  "holds": true,
+  "checked": 30
+}
+Exploratory: census with c = 1 for specifications that have the parameter c ...
+wrote ./runs/lanyon_audit/final.json
+EXIT 0
