@@ -21,6 +21,7 @@ Individual steps, if you need them:
     python scripts/run_lanyon_audit.py collect SESSION_ID   # save the report of a finished run
     python scripts/run_lanyon_audit.py stop SESSION_ID      # save everything, then end the run
     python scripts/run_lanyon_audit.py rebuild SESSION_ID   # rebuild the report from the local event log
+    python scripts/run_lanyon_audit.py resume SESSION_ID    # tell an interrupted lab to continue, then watch
 
 Nothing secret is printed. Records are saved under runs/.
 """
@@ -429,6 +430,34 @@ def cmd_stop(args: argparse.Namespace) -> int:
     return 0
 
 
+RESUME = f"""The run was interrupted: the model provider refused requests because the API
+credit balance was too low. Credit has now been added. Continue the Lanyon audit
+from where it stopped, without repeating finished work:
+1. Check the state first: `git log --oneline -15`, runs/lanyon_audit/ledger.tsv
+   and lab/lanyon_audit/experiment.py. Sub-agent sessions that failed with the
+   credit error did not finish; re-dispatch their tasks if they still matter
+   (for example the wave-2 merged trial and the Planner's headroom analysis).
+2. Then carry on with the loop in program.md (keep rule, Skeptic review,
+   promotion and commits), the c = 1 census, freeze and the report, and finish
+   with the last message described at the start, ending with {COMPLETE_MARKER}
+"""
+
+
+def cmd_resume(args: argparse.Namespace) -> int:
+    """Tell an interrupted lab to continue, then watch it."""
+    client = make_client()
+    out_dir = find_out_dir(args.session_id)
+    say("Resume", f"asking session {args.session_id} to continue from where it stopped")
+    client.post_user_message(args.session_id, RESUME)
+    code = watch(client, args.session_id, out_dir)
+    if code == 0:
+        report = collect(client, args.session_id, out_dir)
+        if report:
+            print(f"\nReport saved to {report.relative_to(REPO_ROOT)}")
+    client.close()
+    return code
+
+
 def cmd_auto(args: argparse.Namespace) -> int:
     """Check, then launch."""
     code = cmd_check()
@@ -443,7 +472,7 @@ def main() -> int:
     for name, func in (("check", cmd_check), ("launch", cmd_launch)):
         sub.add_parser(name).set_defaults(func=func)
     for name, func in (("watch", cmd_watch), ("collect", cmd_collect), ("stop", cmd_stop),
-                       ("rebuild", cmd_rebuild)):
+                       ("rebuild", cmd_rebuild), ("resume", cmd_resume)):
         p = sub.add_parser(name)
         p.add_argument("session_id")
         if name == "stop":
